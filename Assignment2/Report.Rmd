@@ -131,3 +131,20 @@ print(sprintf("Newcomb's   1882    %.3f    %.3f", c1[1], c1[2]))
 print(sprintf("Michelson's 1879    %.3f    %.3f", c2[1], c2[2]))
 print(sprintf("Michelson's 1882    %.3f    %.3f", c3[1], c3[2]))
 ```
+
+## Exercise 3
+
+For testing median values we used sign-test. For the test, hypothesis $H_0: \mu \leq 31$ is tested against the alternative hypothesis, $H_1: \mu > 31$. Since the distribution of the data set is not from a normal distribution, we chose to use sign-test. Histogram and QQ-Plot of the data set can be seen below.
+
+```{r, fig.align='center'}
+klmData = scan("./data/klm.txt")
+
+par(mfrow=c(1,2))
+# This doen't look like it is from normal distribution?
+hist(klmData, freq=FALSE)
+boxplot(klmData)
+
+par(mfrow=c(1,1))
+qqnorm(klmData)
+
+```
