@@ -67,12 +67,24 @@ par(mfrow=c(1,1))
 hist(tStar, probability=TRUE, ylim=c(0, 0.22), main="Histogram of T*", xlab = "T*")
 ```
 
-## Including Plots
+### Exercise 2
 
-You can also embed plots, for example:
+```{r, fig.align='center'}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+light = read.table("./data/light.txt") # Newcomb's measurements made in 1882 on three days
+light1879 = read.table("./data/light1879.txt", fill = TRUE) # Michelson's measurements in 1879
+light1882 = read.table("./data/light1882.txt", fill = TRUE) # Michelson's measurements in 1882
+
+par(mfrow=c(1,2)) # Two graphs side by side
+hist(light$V1, freq=FALSE, main = "Histogram of Newcomb's Measurements")
+boxplot(light$V1)
+
+light1879Stacked = stack(light1879)
+hist(light1879Stacked$values, freq=FALSE, main = "Histogram of Michelson's Measurements in 1879")
+boxplot(light1879Stacked$values)
+
+light1882Stacked = stack(light1882)
+hist(light1882Stacked$values, freq=FALSE, main = "Histogram of Michelson's Measurements in 1882")
+boxplot(light1882Stacked$values)
+
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
