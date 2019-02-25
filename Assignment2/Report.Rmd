@@ -69,6 +69,25 @@ hist(tStar, probability=TRUE, ylim=c(0, 0.22), main="Histogram of T*", xlab = "T
 
 ## Exercise 2
 
+```{r, echo=FALSE}
+confidence = function(data) {
+  B = 1000
+  Tstar = numeric(B)
+  
+  for (i in 1:B) {
+    Xstar = sample(data, replace=TRUE)
+    Tstar[i] = mean(Xstar)
+  }
+  
+  Tstar25 = quantile(Tstar, 0.025, na.rm = TRUE)
+  Tstar975 = quantile(Tstar, 0.975, na.rm = TRUE)
+  
+  T1 = mean(data)
+  sum(Tstar < Tstar25)
+  c(2 * T1 - Tstar975, 2 * T1 - Tstar25)
+}
+```
+
 ```{r, fig.align='center'}
 
 light = read.table("./data/light.txt") # Newcomb's measurements made in 1882 on three days
@@ -81,18 +100,34 @@ light = 7442 / (lightMicro * 10^(-3)) # TODO: This should be 10^-6 but something
 par(mfrow=c(1,2), oma = c(0, 0, 3, 0)) # Two graphs side by side
 hist(light$V1, freq=FALSE, main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light$V1)
+
 mtext("Newcomb's Measurements in 1882", outer = TRUE, cex = 1.3)
 
 light1879Stacked = stack(light1879 + 299000)
+light1879Stacked = light1879Stacked[complete.cases(light1879Stacked), ]
 hist(light1879Stacked$values, freq=FALSE, 
      main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light1879Stacked$values)
 mtext("Michelson's Measurements in 1879", outer = TRUE, cex = 1.3)
 
 light1882Stacked = stack(light1882 + 299000)
+light1882Stacked = light1882Stacked[complete.cases(light1882Stacked), ]
 hist(light1882Stacked$values, freq=FALSE
      , main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light1882Stacked$values)
 mtext("Michelson's Measurements in 1882", outer = TRUE, cex = 1.3)
 
+```
+
+The exact value of the speed of light in vacuum denoted by c is 299,792,458 metres/second. Confidence intervals for the given three different data sets can be seen below. Given the confidence intervals and the exact value of the speed of light, it can be said that it is consistent with the measurements of Michelson's measurements done in 1882.
+
+```{r, echo=FALSE}
+c1 = confidence(light$V1)
+c2 = confidence(light1879Stacked$values)
+c3 = confidence(light1882Stacked$values)
+
+print(sprintf("Method            97.5%%    2.5%%"))
+print(sprintf("Newcomb's   1882    %.3f    %.3f", c1[1], c1[2]))
+print(sprintf("Michelson's 1879    %.3f    %.3f", c2[1], c2[2]))
+print(sprintf("Michelson's 1882    %.3f    %.3f", c3[1], c3[2]))
 ```
