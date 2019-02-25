@@ -1,0 +1,78 @@
+---
+title: "Assignment 2"
+output: html_document
+---
+
+```{r setup, include=FALSE, }
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+### Exercise 1
+
+In this exercise, bootstrap test is used to determine whether the distribution of the data set is exponential and its \Lamda is between [0.01, 0.1].
+
+```{r, fig.align='center'}
+data = read.table("./data/telephone.txt", header = TRUE)
+
+B = 2000 # Iterations times
+
+# Bounds for rate of exponential distribution
+rateLower = 0.01
+rateUpper = 0.1
+rateIncrease = 0.01
+
+n = length(data$Bills)
+
+# Setup for loop
+tStar = numeric(B)
+t = median(data$Bills)
+
+
+hist(data$Bills, freq = FALSE, main="Histogram of Bills", xlab = "Bills")
+x=seq(0, max(data$Bills), length=1000)
+lines(x, dexp(x, 0.03), type = "l", col="blue", lwd=2)
+```
+
+The loop that tries values for \Lambda is given below. All values of H_0: \Lambda = [0.01, 0.1] are rejected except for H_0: \Lambda = 0.03. The curve for /Lambda = 0.03 can be seen in the first graph. However, this density curve does not look like the distribution of T* histogram. Since p-value of the H_0: \Lambda = 0.03 is greater than 5%, the test is inconclusive.
+
+```{r, fig.align='center'}
+# Try for all rates
+for(rate in seq(from=rateLower, to=rateUpper, by=rateIncrease)) {
+  for(iter in seq(from=0, to=B, by=1)) {
+    # Get surrogate X*s from exponential distribution
+    # with same size as the original data set
+    sample = rexp(n, rate)
+    
+    # Store T* values for future comparison
+    tStar[iter] = median(sample)
+  }
+  
+  # Calculate p-value according to the slides of week-2
+  pl = sum(tStar<t) / B
+  pr = sum(tStar>t) / B
+  p = 2*min(pl, pr)
+  
+  if (p > 0.05) {
+    print(sprintf("H0: Rate: %.2f P-Value: %.2f is not rejected.", rate, p))
+    break
+  }
+}
+
+# Try to plot it with same graph style in week-2/30th slide
+par(mfrow=c(1,1))
+hist(tStar, probability=TRUE, ylim=c(0, 0.22), main="Histogram of T*", xlab = "T*")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

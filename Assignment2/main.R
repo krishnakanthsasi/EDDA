@@ -6,7 +6,7 @@ B = 1000 # Iterations times
 
 # Bounds for rate of exponential distribution
 rateLower = 0.01
-rateUpper = 0.1
+rateUpper = 0.11
 rateIncrease = 0.01
 
 n = length(data$Bills)
@@ -15,7 +15,9 @@ n = length(data$Bills)
 tStar = numeric(B)
 t = median(data$Bills)
 
-hist(data$Bills, probability = TRUE)
+hist(data$Bills, freq = FALSE, main="Histogram of Bills")
+x=seq(0, max(data$Bills), length=1000)
+lines(x, dexp(x, 0.03), type = "l", col="blue", lwd=2)
 
 # Try for all rates
 for(rate in seq(from=rateLower, to=rateUpper, by=rateIncrease)) {
@@ -34,7 +36,7 @@ for(rate in seq(from=rateLower, to=rateUpper, by=rateIncrease)) {
   p = 2*min(pl, pr)
   
   if (p > 0.05) {
-    hist(tStar, probability = TRUE)
+    hist(tStar, freq = FALSE)
     print(sprintf("Rate: %.2f P-Value: %.2f", rate, p))
     print("H0 is not rejected.")
     break
@@ -44,5 +46,4 @@ for(rate in seq(from=rateLower, to=rateUpper, by=rateIncrease)) {
 # Try to plot it with same graph style in week-2/30th slide
 # TODO: Figure out how to plot properly
 par(mfrow=c(1,1))
-hist(tStar, probability=TRUE, ylim=c(0, 0.25), main="Histogram of T* & True Density Curve of T")
-
+hist(tStar, freq = FALSE, ylim=c(0, 0.21), main="Histogram of T* & True Density Curve of T")
