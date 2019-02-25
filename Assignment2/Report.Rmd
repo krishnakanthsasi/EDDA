@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE, }
@@ -13,7 +13,7 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ### Exercise 1
 
-In this exercise, bootstrap test is used to determine whether the distribution of the data set is exponential and its \Lamda is between [0.01, 0.1].
+In this exercise, bootstrap test is used to determine whether the distribution of the data set is exponential and its $\lambda$ is between [0.01, 0.1].
 
 ```{r, fig.align='center'}
 data = read.table("./data/telephone.txt", header = TRUE)
@@ -37,7 +37,7 @@ x=seq(0, max(data$Bills), length=1000)
 lines(x, dexp(x, 0.03), type = "l", col="blue", lwd=2)
 ```
 
-The loop that tries values for \Lambda is given below. All values of H_0: \Lambda = [0.01, 0.1] are rejected except for H_0: \Lambda = 0.03. The curve for /Lambda = 0.03 can be seen in the first graph. However, this density curve does not look like the distribution of T* histogram. Since p-value of the H_0: \Lambda = 0.03 is greater than 5%, the test is inconclusive.
+The loop that tries values for $\lambda$ is given below. All values of $H_0: \lambda$ = [0.01, 0.1] are rejected except for $H_0: \lambda$ = 0.03. The curve for $\lambda$ = 0.03 can be seen in the first graph. However, this density curve does not look like the distribution of T* histogram. Since p-value of the $H_0: \lambda$ = 0.03 is greater than 5%, the test is inconclusive.
 
 ```{r, fig.align='center'}
 # Try for all rates
