@@ -148,3 +148,31 @@ par(mfrow=c(1,1))
 qqnorm(klmData)
 
 ```
+
+We expect median to divide the data set into two equal parts so that when a random sample is chosen, the probability of it being smaller or greater than the median should be equal to tossing a coin.
+
+```{r}
+# H_0 median duration is <= 31 days
+testMedian = 31
+
+klmMedian = median(klmData)
+
+sumOut = sum(klmData <= testMedian) # Get values smaller than the test value
+binom.test(sumOut, length(klmData), p=0.5, alternative = "greater")
+
+```
+
+From the output, it can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of 0.013 since it does not divide the sample into about the half of the sample. $H_0: \mu = 31$ is smaller than the actual median since it is located in the first 33% of the data, therefore $H_1 \mu > 31$ is accepted.
+
+For the seconds part of this exercise, we filtered the delivery dates are overdue and used the binomial test with the probability = 10% since we are looking whether the deliveries are mostly on time without violating the agreements.
+
+```{r}
+
+lateDays = sum(klmData > 72) # Days greater than max delivery days of 72
+binom.test(lateDays, length(klmData), p=0.1, alternative = "greater")
+
+```
+
+From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected with the p-value = 0.0056 and the alternative hypothesis $H_1:d > 10\%$ is accepted. This yiels that Boeing is failing to meet with the criteria.
+
+## Exercise 4
