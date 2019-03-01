@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This document describes the solutions found and implemented for the exercises of assignment 2. Exercises can be found in their corresponding sections.
+This document describes the solutions found and implemented for the exercises of assignment 2. Exercises can be found in their corresponding sections. This document is created by Rmd, and figure captions are omitted since it changes the structure of the document in a bad way that makes it hard to follow.
 
 ## Exercise 1
 
@@ -38,7 +38,7 @@ x=seq(0, max(data$Bills), length=1000)
 lines(x, dexp(x, 0.03), type = "l", col="blue", lwd=2)
 ```
 
-The loop that tries values for $\lambda$ is given below. All values of $H_0: \lambda$ = [0.01, 0.1] are rejected except for $H_0: \lambda$ = 0.03. The curve for $\lambda$ = 0.03 can be seen in the first graph. However, this density curve does not look like the distribution of T* histogram. Since p-value of the $H_0: \lambda$ = 0.03 is greater than 5%, the test is inconclusive.
+The loop that tries values for $\lambda$ is given below. All values of $H_0: \lambda$ = [0.01, 0.1] are rejected except for $H_0: \lambda$ = 0.03. The curve for $\lambda$ = 0.03 can be seen in the first graph. However, this density curve does not look like the distribution of T* histogram which can be seen below. Since p-value of the $H_0: \lambda$ = 0.03 is greater than 5%, the test is inconclusive. The result of the p-value for $H_0 \lambda = 0.03$ can be seen after the code snippet.
 
 ```{r, fig.align='center'}
 # Try for all rates
@@ -150,7 +150,7 @@ print(sprintf("Michelson's 1882    %.3f    %.3f", c3[1], c3[2]))
 
 ## Exercise 3
 
-For testing median values we used sign-test because from the graphs, the sample does not seem to have a normal distribution or from a symmetrical population. Histogram and QQ-Plot of the data set can be seen below. For the test, hypothesis $H_0: \mu \leq 31$ is tested against the alternative hypothesis, $H_1: \mu > 31$. 
+For testing median values we used sign-test since from the graphs, the sample does not seem to have a normal distribution or from a symmetrical population. Histogram and QQ-Plot of the data set can be seen below. For the test, hypothesis $H_0: \mu \leq 31$ is tested against the alternative hypothesis, $H_1: \mu > 31$. 
 
 ```{r, fig.align='center'}
 klmData = scan("./data/klm.txt")
@@ -193,7 +193,7 @@ From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected w
 
 ## Exercise 4
 
-In this exercise, effects of silver nitrate to the clouds on rainfoll is investigated. There are two data sets with 26 observations each. In the first section \textit{t}-test, Mann-Whitnet test, and Kolmogorov-Smirnov test are used. In section two, same tests applied to the square root of the data. In the last section, same tests applied to the square root of square rooted data.
+In this exercise, effects of silver nitrate to the clouds on rainfall is investigated. There are two data sets with 26 observations each. In the first section, \textit{t}-test, Mann-Whitnet test, and Kolmogorov-Smirnov test are used. In section two, same tests applied to the square root of the data. In the last section, same tests applied to the square root of square rooted data.
 
 ```{r, echo=FALSE}
 
