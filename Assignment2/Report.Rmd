@@ -8,8 +8,6 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
 ## Introduction
 
 This document describes the solutions found and implemented for the exercises of assignment 2. Exercises can be found in their corresponding sections.
@@ -93,30 +91,43 @@ confidence = function(data) {
 }
 ```
 
-```{r, fig.align='center'}
-
+```{r, echo=FALSE}
 light = read.table("./data/light.txt") # Newcomb's measurements made in 1882 on three days
 light1879 = read.table("./data/light1879.txt", fill = TRUE) # Michelson's measurements in 1879
 light1882 = read.table("./data/light1882.txt", fill = TRUE) # Michelson's measurements in 1882
-
+```
+```{r, fig.align='center'}
+ # Newcomb's measurements made in 1882 on three days
 lightMicro = (light / 1000) + 24.8 # Microseconds to travel 7442 kilometers
-light = 7442 / (lightMicro * 10^(-3)) # TODO: This should be 10^-6 but something is not right
+light = 7442 / (lightMicro * 10^(-3))
 
 par(mfrow=c(1,2), oma = c(0, 0, 3, 0)) # Two graphs side by side
 hist(light$V1, freq=FALSE, main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light$V1)
 
 mtext("Newcomb's Measurements in 1882", outer = TRUE, cex = 1.3)
+```
 
+```{r, echo=FALSE}
 light1879Stacked = stack(light1879 + 299000)
 light1879Stacked = light1879Stacked[complete.cases(light1879Stacked), ]
+```
+
+```{r, fig.align='center'}
+par(mfrow=c(1,2), oma = c(0, 0, 3, 0)) # Two graphs side by side
 hist(light1879Stacked$values, freq=FALSE, 
      main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light1879Stacked$values)
 mtext("Michelson's Measurements in 1879", outer = TRUE, cex = 1.3)
+```
 
+```{r, echo=FALSE}
 light1882Stacked = stack(light1882 + 299000)
 light1882Stacked = light1882Stacked[complete.cases(light1882Stacked), ]
+```
+
+```{r, fig.align='center'}
+par(mfrow=c(1,2), oma = c(0, 0, 3, 0)) # Two graphs side by side
 hist(light1882Stacked$values, freq=FALSE
      , main = "Histogram", xlab="Speed of Light (km/sec)")
 boxplot(light1882Stacked$values)
@@ -146,7 +157,7 @@ klmData = scan("./data/klm.txt")
 
 par(mfrow=c(1,2))
 # This doen't look like it is from normal distribution?
-hist(klmData, freq=FALSE)
+hist(klmData, freq=FALSE, main="Histogram of KLM Data", xlab = "Delivery Times in Days")
 boxplot(klmData)
 
 par(mfrow=c(1,1))
@@ -199,8 +210,10 @@ Test reults of the original data can be seen below. From this output, we fail to
 ```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
-hist(clouds$seeded - clouds$unseeded, main = "Histogram of Cloud Differences")
-qqnorm(clouds$seeded - clouds$unseeded, main = "Normal Q-Q Plot Clouds Differences")
+hist(clouds$seeded - clouds$unseeded, main = "Histogram of Cloud Differences"
+     , xlab = "Seeded - Unseeded")
+qqnorm(clouds$seeded - clouds$unseeded, main = "Normal Q-Q Plot Clouds Differences"
+       , xlab = "Seeded - Unseeded")
 ```
 
 ```{r, echo=FALSE}
@@ -229,8 +242,10 @@ This time we observe from the histogram and the QQ-Plot that the samples are fro
 ```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
-hist(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Histogram of Sqrt Differences")
-qqnorm(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Normal Q-Q Sqrt Differences")
+hist(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Histogram of Sqrt Differences"
+     , xlab = "Sqrt Seeded - Sqrt Unseeded")
+qqnorm(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Normal Q-Q Sqrt Differences"
+       , xlab = "Sqrt Seeded - Sqrt Unseeded")
 ```
 
 ```{r, echo=FALSE}
@@ -250,13 +265,15 @@ ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 
 ### Section 3
 
-As previous section, the histogram and the QQ-Plot of the square root of square rooted sample can be assumed that it is from a normal distribution. All of the tests conclude that the distributions of both samples differ significantly again. The results of all three tests can be seen below. 
+As in previous section, the histogram and the QQ-Plot of the square root of square rooted sample can be assumed that it is from a normal distribution. All of the tests conclude that the distributions of both samples differ significantly again. The results of all three tests can be seen below. 
 
 ```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
-hist(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Histogram of SqrtSqrt Differences")
-qqnorm(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Normal Q-Q SqrtSqrt Differences")
+hist(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Histogram of SqrtSqrt Differences"
+     , xlab = "Sqrt Sqrt Seeded - Sqrt Sqrt Unseeded")
+qqnorm(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Normal Q-Q SqrtSqrt Differences"
+       , xlab = "Sqrt Sqrt Seeded - Sqrt Sqrt Unseeded")
 ```
 
 ```{r, echo=FALSE}
@@ -276,7 +293,7 @@ ks.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
 
 ## Exercise 5
 
-```{r, fig.align='center'}
+```{r, echo=FALSE, fig.align='center'}
 
 peruvians = read.table("./data/peruvians.txt", header=TRUE)
 ```
