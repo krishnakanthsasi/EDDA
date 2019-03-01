@@ -254,11 +254,11 @@ print(sprintf("probability of success %.3f", t1Test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t1Wilcox$p.value))
-print(sprintf("W value is %.3ff", t1Wilcox$statistic))
+print(sprintf("W value is %.3f", t1Wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t1Ks$p.value))
-print(sprintf("D value is %.3ff", t1Ks$statistic))
+print(sprintf("D value is %.3f", t1Ks$statistic))
 ```
 
 ### Section 2
@@ -296,11 +296,11 @@ print(sprintf("probability of success %.3f", t2test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t2wilcox$p.value))
-print(sprintf("W value is %.3ff", t2wilcox$statistic))
+print(sprintf("W value is %.3f", t2wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t2ls$p.value))
-print(sprintf("D value is %.3ff", t2ls$statistic))
+print(sprintf("D value is %.3f", t2ls$statistic))
 ```
 
 ### Section 3
@@ -337,11 +337,11 @@ print(sprintf("probability of success %.3f", t3test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t3wilcox$p.value))
-print(sprintf("W value is %.3ff", t3wilcox$statistic))
+print(sprintf("W value is %.3f", t3wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t3ks$p.value))
-print(sprintf("D value is %.3ff", t3ks$statistic))
+print(sprintf("D value is %.3f", t3ks$statistic))
 ```
 
 ## Exercise 5
