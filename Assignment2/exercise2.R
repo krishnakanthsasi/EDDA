@@ -10,13 +10,13 @@ confidence = function(data) {
   
   for (i in 1:B) {
     Xstar = sample(data, replace=TRUE)
-    Tstar[i] = mean(Xstar)
+    Tstar[i] = median(Xstar)
   }
   
   Tstar25 = quantile(Tstar, 0.025, na.rm = TRUE)
   Tstar975 = quantile(Tstar, 0.975, na.rm = TRUE)
   
-  T1 = mean(data)
+  T1 = median(data)
   sum(Tstar < Tstar25)
   c(2 * T1 - Tstar975, 2 * T1 - Tstar25)
 }

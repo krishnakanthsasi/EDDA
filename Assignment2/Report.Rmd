@@ -69,6 +69,8 @@ hist(tStar, probability=TRUE, ylim=c(0, 0.22), main="Histogram of T*", xlab = "T
 
 ## Exercise 2
 
+This exercise inspects the measurements of the speed of light done by two scientists in three different times. Histograms and box plots of these measurements can be seen below. From the box plot, it can be seen that the mean of all measurements are around the speed of light, however, the measurements also seem to have some outliers.  Histograms of the measurements suggest that these measurements are probably from the same distribution. To figure out confidence intervals, we used median since it is more reliable against the outliers that are present in all of the measurements.
+
 ```{r, echo=FALSE}
 confidence = function(data) {
   B = 1000
@@ -76,13 +78,13 @@ confidence = function(data) {
   
   for (i in 1:B) {
     Xstar = sample(data, replace=TRUE)
-    Tstar[i] = mean(Xstar)
+    Tstar[i] = median(Xstar)
   }
   
   Tstar25 = quantile(Tstar, 0.025, na.rm = TRUE)
   Tstar975 = quantile(Tstar, 0.975, na.rm = TRUE)
   
-  T1 = mean(data)
+  T1 = median(data)
   sum(Tstar < Tstar25)
   c(2 * T1 - Tstar975, 2 * T1 - Tstar25)
 }
@@ -119,7 +121,7 @@ mtext("Michelson's Measurements in 1882", outer = TRUE, cex = 1.3)
 
 ```
 
-The exact value of the speed of light in vacuum denoted by c is 299,792,458 metres/second. Confidence intervals for the given three different data sets can be seen below. Given the confidence intervals and the exact value of the speed of light, it can be said that it is consistent with the measurements of Michelson's measurements done in 1882.
+The exact value of the speed of light in vacuum denoted by \textit{c} is 299,792,458 metres/second. Confidence intervals for the given three different data sets in kilometre/second can be seen below.  Given the confidence intervals and the exact value of the speed of light, it can be said that it is consistent with the measurements of Michelson's measurements done in 1882.
 
 ```{r, echo=FALSE}
 c1 = confidence(light$V1)
@@ -177,6 +179,8 @@ From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected w
 
 ## Exercise 4
 
+In this exercise, effects of silver nitrate to the clouds on rainfoll is investigated. There are two data sets with 26 observations each. In the first section \textit{t}-test, Mann-Whitnet test, and Kolmogorov-Smirnov test are used. In section two, same tests applied to the square root of the data. In the last section, same tests applied to the square root of square rooted data.
+
 ```{r, echo=FALSE}
 
 clouds = read.table("./data/clouds.txt", header = TRUE)
@@ -187,12 +191,16 @@ sqrtSqrtClouds = sqrt(sqrtClouds)
 
 ### Section 1
 
+Test reults of the original data can be seen below. From this output, we fail to reject $H_0$ by using \textit{t}-test becuase of its p-value being greater than 5%. Unfortunately, from the histogram and the QQ-Plot, we suspect that the distributions are not normal, therefore using \textit{t}-test is meaningless. In the Mann-Whitney test and Kolmogorov - Smirnov tests, we rejected $H_0$ with the p-value= 0.013 concluding that the distributions of the samples are different. 
+
 ```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
 hist(clouds$seeded - clouds$unseeded, main = "Histogram of Cloud Differences")
 qqnorm(clouds$seeded - clouds$unseeded, main = "Normal Q-Q Plot Clouds Differences")
+```
 
+```{r, echo=FALSE}
 # T - Test
 
 # Differences of the data samples does not seem to be normal
@@ -213,12 +221,16 @@ ks.test(clouds$seeded, clouds$unseeded)
 
 ### Section 2
 
-```{r, fig.align=TRUE}
+This time we observe from the histogram and the QQ-Plot that the samples are from a normal distribution. This means that we can use \textit{t}-test this time. From the test results, as before, it can be concluded that the distributions differ significantly for the seeded and unseeded samples.
+
+```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
 hist(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Histogram of Sqrt Differences")
 qqnorm(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Normal Q-Q Sqrt Differences")
+```
 
+```{r, echo=FALSE}
 # T - Test
 
 t.test(sqrtClouds$seeded, sqrtClouds$unseeded)
@@ -235,13 +247,14 @@ ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 
 ### Section 3
 
-
-```{r, fig.align=TRUE}
+```{r, fig.align='center'}
 
 par(mfrow=c(1,2))
 hist(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Histogram of SqrtSqrt Differences")
 qqnorm(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Normal Q-Q SqrtSqrt Differences")
+```
 
+```{r, echo=FALSE}
 # T - Test
 
 t.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
@@ -258,49 +271,50 @@ ks.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
 
 ## Exercise 5
 
-```{r, fig.align=TRUE}
+```{r, fig.align='center'}
 
-peruvians = read.table("C:/Users/krish/Documents/EDDA/Assignment2/data/peruvians.txt", header=TRUE)
+peruvians = read.table("./data/peruvians.txt", header=TRUE)
 ```
 
 ### Section 1
 
-```{r. fig.align=TRUE}
+```{r, fig.align='center'}
+
 par(mfrow=c(3,3))
-plot(age~migration)
-plot(weight~migration)
-plot(length~migration)
-plot(wrist~migration)
-plot(systolic~migration)
-plot(diastolic~migration)
+plot(age~migration, peruvians)
+plot(weight~migration, peruvians)
+plot(length~migration, peruvians)
+plot(wrist~migration, peruvians)
+plot(systolic~migration, peruvians)
+plot(diastolic~migration, peruvians)
 ```
 
 From the plots, there seems to be a dependence between age, and weight to migration years.Apart from this none of the other variables seems to display a significant correlation to migration.
 
 ### Section 2
 
-```{r, fig.align=TRUE}
+```{r, fig.align='center'}
 par(mfrow=c(1,1))
 # Checking normality for migration sample
-qqnorm(migration,main="Q-Q Plot migration")
+qqnorm(peruvians$migration,main="Q-Q Plot migration")
 #Normality is not evident for migration sample, hence we use Spearman's correlation test to check for dependence between the variables
 
-print(cor.test(age, migration, method = "spearman"))
+print(cor.test(peruvians$age, peruvians$migration, method = "spearman"))
 # Moderate correlation observed
 
-print(cor.test(weight, migration, method = "spearman"))
+print(cor.test(peruvians$weight, peruvians$migration, method = "spearman"))
 # Moderate correlation observed
 
-print(cor.test(length, migration, method = "spearman"))
+print(cor.test(peruvians$length, peruvians$migration, method = "spearman"))
 # Insignificant correlation
 
-print(cor.test(wrist, migration, method = "spearman"))
+print(cor.test(peruvians$wrist, peruvians$migration, method = "spearman"))
 # Weak correlation observed
 
-print(cor.test(systolic, migration, method = "spearman"))
+print(cor.test(peruvians$systolic, peruvians$migration, method = "spearman"))
 # Weak but inverse correlation observed
 
-print(cor.test(diastolic, migration, method = "spearman"))
+print(cor.test(peruvians$diastolic, peruvians$migration, method = "spearman"))
 # Insignificant correlation observed
 ```
 
