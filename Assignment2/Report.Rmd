@@ -126,7 +126,7 @@ c1 = confidence(light$V1)
 c2 = confidence(light1879Stacked$values)
 c3 = confidence(light1882Stacked$values)
 
-print(sprintf("Method            97.5%%    2.5%%"))
+print(sprintf("Method              97.5%%    2.5%%"))
 print(sprintf("Newcomb's   1882    %.3f    %.3f", c1[1], c1[2]))
 print(sprintf("Michelson's 1879    %.3f    %.3f", c2[1], c2[2]))
 print(sprintf("Michelson's 1882    %.3f    %.3f", c3[1], c3[2]))
@@ -134,7 +134,7 @@ print(sprintf("Michelson's 1882    %.3f    %.3f", c3[1], c3[2]))
 
 ## Exercise 3
 
-For testing median values we used sign-test. For the test, hypothesis $H_0: \mu \leq 31$ is tested against the alternative hypothesis, $H_1: \mu > 31$. Since the distribution of the data set is not from a normal distribution, we chose to use sign-test. Histogram and QQ-Plot of the data set can be seen below.
+For testing median values we used sign-test because from the graphs, the sample does not seem to have a normal distribution or from a symmetrical population. Histogram and QQ-Plot of the data set can be seen below. For the test, hypothesis $H_0: \mu \leq 31$ is tested against the alternative hypothesis, $H_1: \mu > 31$. 
 
 ```{r, fig.align='center'}
 klmData = scan("./data/klm.txt")
@@ -148,3 +148,113 @@ par(mfrow=c(1,1))
 qqnorm(klmData)
 
 ```
+
+We expect median to divide the data set into two equal parts so that when a random sample is chosen, the probability of it being smaller or greater than the median should be equal to tossing a coin.
+
+```{r}
+# H_0 median duration is <= 31 days
+testMedian = 31
+
+klmMedian = median(klmData)
+
+sumOut = sum(klmData <= testMedian) # Get values smaller than the test value
+binom.test(sumOut, length(klmData), p=0.5, alternative = "greater")
+
+```
+
+From the output, it can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of 0.013 since $H_0: \mu \leq 31$ is not greater than the 50% of the sample since it is located in the first 33% of the data, therefore $H_1 \mu > 31$ is accepted.
+
+For the seconds part of this exercise, we filtered the delivery dates which are overdue and used  binomial test with the probability of 10% since we are looking whether the deliveries are mostly made on time by Boeing without violating the criteria that is demanded by KLM.
+
+```{r}
+
+lateDays = sum(klmData > 72) # Days greater than max delivery days of 72
+binom.test(lateDays, length(klmData), p=0.1, alternative = "greater")
+
+```
+
+From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected with the p-value = 0.0056 and the alternative hypothesis $H_1:d > 10\%$ is accepted. This yiels that Boeing is failing to meet the criteria by delivering more than 10% of the parts late.
+
+## Exercise 4
+
+```{r, echo=FALSE}
+
+clouds = read.table("./data/clouds.txt", header = TRUE)
+sqrtClouds = sqrt(clouds)
+sqrtSqrtClouds = sqrt(sqrtClouds)
+
+```
+
+### Section 1
+
+```{r, fig.align='center'}
+
+par(mfrow=c(1,2))
+hist(clouds$seeded - clouds$unseeded, main = "Histogram of Cloud Differences")
+qqnorm(clouds$seeded - clouds$unseeded, main = "Normal Q-Q Plot Clouds Differences")
+
+# T - Test
+
+# Differences of the data samples does not seem to be normal
+# However, histogram of these differences is seem to be?
+# This is probably not paired since QQ Normal Plot suggests that
+# the distribution is not normal
+t.test(clouds$seeded, clouds$unseeded)
+
+# Mann - Whitney Test
+
+wilcox.test(clouds$seeded, clouds$unseeded)
+
+# Kolmogorov - Smirnov Test
+
+ks.test(clouds$seeded, clouds$unseeded)
+
+```
+
+### Section 2
+
+```{r, fig.align=TRUE}
+
+par(mfrow=c(1,2))
+hist(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Histogram of Sqrt Differences")
+qqnorm(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Normal Q-Q Sqrt Differences")
+
+# T - Test
+
+t.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+
+# Mann - Whitney Test
+
+wilcox.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+
+# Kolmogorov - Smirnov Test
+
+ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+
+```
+
+### Section 3
+
+
+```{r, fig.align=TRUE}
+
+par(mfrow=c(1,2))
+hist(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Histogram of SqrtSqrt Differences")
+qqnorm(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Normal Q-Q SqrtSqrt Differences")
+
+# T - Test
+
+t.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+
+# Mann - Whitney Test
+
+wilcox.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+
+# Kolmogorov - Smirnov Test
+
+ks.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+
+```
+
+## Exercise 5
+

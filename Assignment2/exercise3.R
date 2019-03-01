@@ -18,4 +18,13 @@ klmMedian = median(klmData)
 
 sumOut = sum(klmData <= testMedian) # Get values smaller than the test value
 
-binom.test(sumOut, length(klmData), p=0.5)
+binom.test(sumOut, length(klmData), p=0.5, alternative = "greater")
+
+#Seconds part
+lateDays = numeric(sum(klmData > 72))
+lateDays = klmData[which(klmData > 72)]
+lateDays # Days greater than max delivery days of 72
+
+binom.test(length(lateDays), length(klmData), p=0.1, alternative = "greater")
+
+
