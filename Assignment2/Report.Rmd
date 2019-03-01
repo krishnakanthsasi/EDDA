@@ -343,3 +343,98 @@ print(cor.test(peruvians$diastolic, peruvians$migration, method = "spearman"))
 Both age and weight seems to show moderate correlation to migration. Other variables, display either insignificant or weak correlation. 
 
 ## Exercise 6
+
+
+### Section 1
+
+```{r, fig.align='center'}
+df <- read.table("C:/Users/Tommy/Desktop/run.txt")
+df$cat <- c(rep(1,12), rep(2,12))
+
+print(summary(df))
+par(mfrow=c(1,1)); plot(before~after, pch=cat, col=cat, data=df); abline(0,1)
+par(mfrow=c(1,2))
+boxplot(df[1:12,1],df[1:12,2], df[13:24,1], df[13:24,2], 
+        col=c('red','red','blue','blue'), 
+        names=c("lemonade before","lemonade after","energy before","energy after"), cex.axis = 0.5, 
+        ylab = "sprinting time", cex.lab = 0.7)
+boxplot(df[1:12,1]-df[1:12,2],df[13:24,1]-df[13:24,2],
+        names = c("lemonade", "energy"), cex.axis = 0.5, 
+        ylab = "differences per sample pair (before/after)", cex.lab = 0.7)
+```
+
+### Section 2
+
+```{r, fig.align='center'}
+t.test(df[1:12,1],df[1:12,2],paired=TRUE)
+t.test(df[13:24,1], df[13:24,2], paired=TRUE)
+```
+For the lemonade group, there is no cause to reject the null hypothesis and assume that the means are different. The same holds for the energy group, although the p-value is lower for this group (p-value = 0.1264).
+
+### Section 3
+
+```{r, fig.align='center'}
+df$differences <- df$before - df$after
+t.test(df[1:12,5],df[13:24,5])
+```
+
+### Section 4
+
+Since the participants were asked to run two stretches within a relatively small timespan, the first measurement may be affecting the second (learning effect). there could be additional factors affecting performance on the second run such as fatigue or muscle activation (i.e. 'getting warmed up'). 
+
+### Section 5
+
+Here, the samples are drawn from independent populations (different students) and one measurement does not affect the other, so there is no learning effect present.
+
+### Question 6
+
+The samples must come from a normal population. Whether this condition is satisfied can be examined by investigating the normality of the residuals.
+
+```{r, fig.align='center'}
+residuals <- df[1:12,5] - df[13:24,5]
+qqnorm(residuals, main='Q-Q plot of residuals')
+```
+
+## Exercise 7
+
+### Section 1
+
+```{r, fig.align='center'}
+dogs <- read.table("C:/Users/Tommy/Desktop/dogs.txt",stringsAsFactors = FALSE)
+boxplot(as.numeric(dogs[2:11,1]), as.numeric(dogs[2:11,2]), as.numeric(dogs[2:11,3]),
+        ylab = "concentration (ng/mm)",
+        main = "concentrations of plasma epinephrine",
+        names = c("isofluorane", "halothane", "cyclopropane"))
+
+par(mfrow=c(1,3))
+qqnorm(as.numeric(dogs[2:11,1]), main = dogs[1,1])
+qqnorm(as.numeric(dogs[2:11,2]), main = dogs[1,2])
+qqnorm(as.numeric(dogs[2:11,3]), main = dogs[1,3])
+```
+
+It is not reasonable to assume that the samples were taken from normal populations, since the plot for isofluorane appears skewed and could be nonnormal. 
+
+### Section 2
+
+```{r, fig.align='center'}
+dogsframe <- data.frame(concentration=as.numeric(as.matrix(dogs[2:11,])), 
+                        substance=factor(c(rep(dogs[1,1],10),rep(dogs[1,2],10),rep(dogs[1,3],10))))
+dogsaov=lm(concentration~substance,data=dogsframe)
+anova(dogsaov)
+summary(dogsaov)
+```
+
+The p-value is low (0.011), so the null hypothesis would be rejected.
+
+The estimated concentrations are as follows:          
+isofluorane: 0.469
+halothane: 0.434
+cyclopropane: 0.853
+
+### Section 3
+
+```{r, fig.align='center'}
+kruskal.test(dogsframe$concentration,dogsframe$substance)
+```
+
+The p-value is 0.5948, which is larger than 0.05. The null hypothesis would not be rejected. The difference in results could indicate that the assumptions for a parametric one-way ANOVA test are not met. The populations tested here may be nonnormal, as seen in the Q-Q plots in Section 1, and the sample size is small (n=10). 
