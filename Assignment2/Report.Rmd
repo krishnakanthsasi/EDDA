@@ -1,5 +1,6 @@
 ---
 title: "Assignment 2"
+author: "Tommy Maaiveld, Krishnakanth Sasi, Halil Kaan Kara, Group 6"
 output: pdf_document
 ---
 
@@ -7,9 +8,11 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
 ## Introduction
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This document describes the solutions found and implemented for the exercises of assignment 2. Exercises can be found in their corresponding sections.
 
 ## Exercise 1
 
@@ -246,6 +249,8 @@ ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 ```
 
 ### Section 3
+
+As previous section, the histogram and the QQ-Plot of the square root of square rooted sample can be assumed that it is from a normal distribution. All of the tests conclude that the distributions of both samples differ significantly again. The results of all three tests can be seen below. 
 
 ```{r, fig.align='center'}
 
