@@ -374,22 +374,22 @@ par(mfrow=c(1,1))
 qqnorm(peruvians$migration,main="Q-Q Plot migration")
 #Normality is not evident for migration sample, hence we use Spearman's correlation test to check for dependence between the variables
 
-print(cor.test(peruvians$age, peruvians$migration, method = "spearman"))
+cor.test(peruvians$age, peruvians$migration, method = "spearman")
 # Moderate correlation observed
 
-print(cor.test(peruvians$weight, peruvians$migration, method = "spearman"))
+cor.test(peruvians$weight, peruvians$migration, method = "spearman")
 # Moderate correlation observed
 
-print(cor.test(peruvians$length, peruvians$migration, method = "spearman"))
+cor.test(peruvians$length, peruvians$migration, method = "spearman")
 # Insignificant correlation
 
-print(cor.test(peruvians$wrist, peruvians$migration, method = "spearman"))
+cor.test(peruvians$wrist, peruvians$migration, method = "spearman")
 # Weak correlation observed
 
-print(cor.test(peruvians$systolic, peruvians$migration, method = "spearman"))
+cor.test(peruvians$systolic, peruvians$migration, method = "spearman")
 # Weak but inverse correlation observed
 
-print(cor.test(peruvians$diastolic, peruvians$migration, method = "spearman"))
+cor.test(peruvians$diastolic, peruvians$migration, method = "spearman")
 # Insignificant correlation observed
 ```
 
