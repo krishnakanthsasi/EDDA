@@ -174,22 +174,33 @@ testMedian = 31
 klmMedian = median(klmData)
 
 sumOut = sum(klmData <= testMedian) # Get values smaller than the test value
-binom.test(sumOut, length(klmData), p=0.5, alternative = "greater")
-
+klmbinom = binom.test(sumOut, length(klmData), p=0.5, alternative = "less")
+```
+```{r, echo=FALSE}
+print(sprintf("Testing H0 lambda <= median"))
+print(sprintf("p-value is %f", klmbinom$p.value))
+print(sprintf("confidence interval is %.3f - %.3f", klmbinom$conf.int[1], klmbinom$conf.int[2]))
+print(sprintf("probability of success %.3f", klmbinom$estimate))
 ```
 
-From the output, it can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of 0.013 since $H_0: \mu \leq 31$ is not greater than the 50% of the sample since it is located in the first 33% of the data, therefore $H_1 \mu > 31$ is accepted.
+From the output, it can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of `r klmbinom$p.value` since $H_0: \mu \leq 31$ is not greater than the 50% of the sample since it is located in the first 33% of the data, therefore $H_1 \mu > 31$ is accepted.
 
 For the seconds part of this exercise, we filtered the delivery dates which are overdue and used  binomial test with the probability of 10% since we are looking whether the deliveries are mostly made on time by Boeing without violating the criteria that is demanded by KLM.
 
 ```{r}
 
 lateDays = sum(klmData > 72) # Days greater than max delivery days of 72
-binom.test(lateDays, length(klmData), p=0.1, alternative = "greater")
+lateBinom = binom.test(lateDays, length(klmData), p=0.1, alternative = "greater")
+```
+```{r, echo=FALSE}
+print(sprintf("Testing H0 deliveryTime < 72 days"))
+print(sprintf("p-value is %.3f", lateBinom$p.value))
+print(sprintf("confidence interval is %.3f - %.3f", lateBinom$conf.int[1], lateBinom$conf.int[2]))
+print(sprintf("probability of success %.3f", lateBinom$estimate))
 
 ```
 
-From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected with the p-value = 0.0056 and the alternative hypothesis $H_1:d > 10\%$ is accepted. This yiels that Boeing is failing to meet the criteria by delivering more than 10% of the parts late.
+From the output of the test, it can be seen that $H_0:d \leq 10\%$ is rejected with the p-value = `r lateBinom$p.value` and the alternative hypothesis $H_1:d > 10\%$ is accepted. This yiels that Boeing is failing to meet the criteria by delivering more than 10% of the parts late.
 
 ## Exercise 4
 
@@ -216,23 +227,38 @@ qqnorm(clouds$seeded - clouds$unseeded, main = "Normal Q-Q Plot Clouds Differenc
        , xlab = "Seeded - Unseeded")
 ```
 
-```{r, echo=FALSE}
+```{r}
 # T - Test
 
 # Differences of the data samples does not seem to be normal
 # However, histogram of these differences is seem to be?
 # This is probably not paired since QQ Normal Plot suggests that
 # the distribution is not normal
-t.test(clouds$seeded, clouds$unseeded)
+t1Test = t.test(clouds$seeded, clouds$unseeded)
 
 # Mann - Whitney Test
 
-wilcox.test(clouds$seeded, clouds$unseeded)
+t1Wilcox = wilcox.test(clouds$seeded, clouds$unseeded)
 
 # Kolmogorov - Smirnov Test
 
-ks.test(clouds$seeded, clouds$unseeded)
+t1Ks = ks.test(clouds$seeded, clouds$unseeded)
 
+```
+
+```{r, echo = FALSE}
+print(sprintf("T-Test - Testing H0 Both samples come from a normal population"))
+print(sprintf("p-value is %.3f", t1Test$p.value))
+print(sprintf("confidence interval is %.3f - %.3f", t1Test$conf.int[1], t1Test$conf.int[2]))
+print(sprintf("probability of success %.3f", t1Test$estimate))
+
+print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t1Wilcox$p.value))
+print(sprintf("W value is %.3ff", t1Wilcox$statistic))
+
+print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t1Ks$p.value))
+print(sprintf("D value is %.3ff", t1Ks$statistic))
 ```
 
 ### Section 2
@@ -248,19 +274,33 @@ qqnorm(sqrtClouds$seeded - sqrtClouds$unseeded, main = "Normal Q-Q Sqrt Differen
        , xlab = "Sqrt Seeded - Sqrt Unseeded")
 ```
 
-```{r, echo=FALSE}
+```{r}
 # T - Test
 
-t.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+t2test = t.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 
 # Mann - Whitney Test
 
-wilcox.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+t2wilcox = wilcox.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 
 # Kolmogorov - Smirnov Test
 
-ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
+t2ls = ks.test(sqrtClouds$seeded, sqrtClouds$unseeded)
 
+```
+```{r, echo = FALSE}
+print(sprintf("T-Test - Testing H0 Both samples come from a normal population"))
+print(sprintf("p-value is %.3f", t2test$p.value))
+print(sprintf("confidence interval is %.3f - %.3f", t2test$conf.int[1], t2test$conf.int[2]))
+print(sprintf("probability of success %.3f", t2test$estimate))
+
+print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t2wilcox$p.value))
+print(sprintf("W value is %.3ff", t2wilcox$statistic))
+
+print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t2ls$p.value))
+print(sprintf("D value is %.3ff", t2ls$statistic))
 ```
 
 ### Section 3
@@ -279,16 +319,29 @@ qqnorm(sqrtSqrtClouds$seeded - sqrtSqrtClouds$unseeded, main = "Normal Q-Q SqrtS
 ```{r, echo=FALSE}
 # T - Test
 
-t.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+t3test = t.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
 
 # Mann - Whitney Test
 
-wilcox.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+t3wilcox = wilcox.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
 
 # Kolmogorov - Smirnov Test
 
-ks.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+t3ks = ks.test(sqrtSqrtClouds$seeded, sqrtSqrtClouds$unseeded)
+```
+```{r, echo = FALSE}
+print(sprintf("T-Test - Testing H0 Both samples come from a normal population"))
+print(sprintf("p-value is %.3f", t3test$p.value))
+print(sprintf("confidence interval is %.3f - %.3f", t3test$conf.int[1], t3test$conf.int[2]))
+print(sprintf("probability of success %.3f", t3test$estimate))
 
+print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t3wilcox$p.value))
+print(sprintf("W value is %.3ff", t3wilcox$statistic))
+
+print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
+print(sprintf("p-value is %.3f", t3ks$p.value))
+print(sprintf("D value is %.3ff", t3ks$statistic))
 ```
 
 ## Exercise 5
@@ -348,7 +401,7 @@ Both age and weight seems to show moderate correlation to migration. Other varia
 ### Section 1
 
 ```{r, fig.align='center'}
-df <- read.table("C:/Users/Tommy/Desktop/run.txt")
+df <- read.table("./data/run.txt")
 df$cat <- c(rep(1,12), rep(2,12))
 
 print(summary(df))
@@ -400,7 +453,7 @@ qqnorm(residuals, main='Q-Q plot of residuals')
 ### Section 1
 
 ```{r, fig.align='center'}
-dogs <- read.table("C:/Users/Tommy/Desktop/dogs.txt",stringsAsFactors = FALSE)
+dogs <- read.table("./data/dogs.txt",stringsAsFactors = FALSE)
 boxplot(as.numeric(dogs[2:11,1]), as.numeric(dogs[2:11,2]), as.numeric(dogs[2:11,3]),
         ylab = "concentration (ng/mm)",
         main = "concentrations of plasma epinephrine",

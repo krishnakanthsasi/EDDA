@@ -18,7 +18,7 @@ klmMedian = median(klmData)
 
 sumOut = sum(klmData <= testMedian) # Get values smaller than the test value
 
-binom.test(sumOut, length(klmData), p=0.5, alternative = "greater")
+binom.test(sumOut, length(klmData), p=0.5, alternative = "less")
 
 #Seconds part
 lateDays = numeric(sum(klmData > 72))
