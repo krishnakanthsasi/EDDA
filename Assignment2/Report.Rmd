@@ -183,7 +183,7 @@ print(sprintf("confidence interval is %.3f - %.3f", klmbinom$conf.int[1], klmbin
 print(sprintf("probability of success %.3f", klmbinom$estimate))
 ```
 
-From the output, it can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of `r klmbinom$p.value` since $H_0: \mu \leq 31$ is not greater than the 50% of the sample since it is located in the first 33% of the data, therefore $H_1 \mu > 31$ is accepted.
+It can be seen that the $H_0:  \mu \leq 31$ is rejected with the p-value of `r klmbinom$p.value` since $H_0: \mu \leq 31$ is not greater than the 50% of the sample. It is located in the first 33% of the data, therefore $H_1: \mu > 31$ is accepted.
 
 For the seconds part of this exercise, we filtered the delivery dates which are overdue and used  binomial test with the probability of 10% since we are looking whether the deliveries are mostly made on time by Boeing without violating the criteria that is demanded by KLM.
 
@@ -254,11 +254,11 @@ print(sprintf("probability of success %.3f", t1Test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t1Wilcox$p.value))
-print(sprintf("W value is %.3ff", t1Wilcox$statistic))
+print(sprintf("W value is %.3f", t1Wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t1Ks$p.value))
-print(sprintf("D value is %.3ff", t1Ks$statistic))
+print(sprintf("D value is %.3f", t1Ks$statistic))
 ```
 
 ### Section 2
@@ -296,11 +296,11 @@ print(sprintf("probability of success %.3f", t2test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t2wilcox$p.value))
-print(sprintf("W value is %.3ff", t2wilcox$statistic))
+print(sprintf("W value is %.3f", t2wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t2ls$p.value))
-print(sprintf("D value is %.3ff", t2ls$statistic))
+print(sprintf("D value is %.3f", t2ls$statistic))
 ```
 
 ### Section 3
@@ -337,11 +337,11 @@ print(sprintf("probability of success %.3f", t3test$estimate))
 
 print(sprintf("Mann - Whitney Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t3wilcox$p.value))
-print(sprintf("W value is %.3ff", t3wilcox$statistic))
+print(sprintf("W value is %.3f", t3wilcox$statistic))
 
 print(sprintf("Kolmogorov - Smirnov Test - Testing H0 Both samples are from the same population"))
 print(sprintf("p-value is %.3f", t3ks$p.value))
-print(sprintf("D value is %.3ff", t3ks$statistic))
+print(sprintf("D value is %.3f", t3ks$statistic))
 ```
 
 ## Exercise 5
