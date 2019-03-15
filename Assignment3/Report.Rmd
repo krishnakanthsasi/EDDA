@@ -9,12 +9,108 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+This document describes the solutions found and implemented for the exercises of assignment 3. Exercises can be found in their corresponding sections. This document is created by Rmd, and figure captions are omitted since it changes the structure of the document in a bad way that makes it hard to follow
 
 ## Question 1
+This question investigates the effect of humidity and temperature on time to decay for a bread loaf. There are 18 slices of bread assigned to 6 different kind of treatments, based on 3 different level of temperature and 2 different level of humidity.
+Data is analysed with a 2 way experiment with interactions.
+
+### Section 1
+Randomization is executed using *cbind()* function, repeating each of the factors to match the total experimental units.
+
+```{r, fig.align='center', echo=FALSE}
+bread = as.character(c(1:18))
+temperatures = c("warm", "intermediate", "cold")
+humidity = c("dry", "wet")
+design = cbind(data.frame("slice" = bread), data.frame("temperatures" = sample(rep(temperatures, each=6))), data.frame("humidity" = sample(rep(humidity, each=9))))
+print(design)
+```
+
+### Section 2
+```{r, fig.align='center', echo=FALSE}
+study_data = read.table(file = "./data/bread.txt", header = TRUE)
+
+boxplot(hours~environment, data = study_data, xlab = "Temperature", ylab = "Hours to decay", main = "Box plot of hours vs temperature")
+boxplot(hours~humidity, data = study_data, xlab = "Humidity", ylab = "Hours to decay", main = "Box plot of hours vs humidity")
+
+interaction.plot(study_data$environment, study_data$humidity, study_data$hours, trace.label = "Humidity", xlab = "Temperature", ylab = "Mean of hours to decay ", main = "Interaction between hours and temperature")
+interaction.plot(study_data$humidity, study_data$environment, study_data$hours, trace.label = "Temperature", xlab = "Humidity", ylab = "Mean of hours to decay ", main = "Interaction between hours and humidity")
+
+
+
+
+```
+
+### Section 3
+```{r, fig.align="centre",echo=FALSE}
+#analysis of variance
+study_data$environment = as.factor(study_data$environment)
+study_data$humidity = as.factor((study_data$humidity))
+study_data_aov = lm(hours~humidity*environment, data=study_data)
+# results of aov
+print(anova(study_data_aov))
+
+```
+As can be seen, P value of interaction component between the factors is < 0.05. So the interaction is statistically significant. This means that the relationship between environment and decay hours depends on the humidity.
+
+### Section 4
+
+Estimating which of the factors has greater main effect is not be relevant here because of significant interaction between the factors. We should be able to ignore the interaction effects for an additive model generation and mean estimation, which isn't possible in this case. Because of the interaction, one of the factors might be augumenting the effects of another, thereby skewing the results. Therefore this is not a good question to ask.
+
+### Section 5
+```{r, fig.align='centre', echo=FALSE}
+#Diagnostics
+qqnorm(residuals(study_data_aov), main = "Normal Q-Q plot of the residuals of the AOV test")
+```
+
+Normality is present. There are two outliers present however, removing them would give better results.
+```{r, fig.align='centre', echo=FALSE}
+plot(fitted(study_data_aov),residuals(study_data_aov))
+```
+The residual spread seems homogenous except for two fitted points around 230-240. Removing these outliers would produce better results. 
+
+As can be seen from the above two plots there are two outliers.
+
+
 
 ## Question 2
 
 ## Question 3
+This question investigates the effect of a particular kind of starter on the yogurt formation. The explanatory factors are starter, position and batch. The data is analysed in a 3 way experiment without considering interactions.
+
+### Section 1
+```{r, fig.align='center', echo=FALSE}
+study_data1 = read.table(file = "./data/cream.txt", header = TRUE)
+
+# 3 way Anova
+study_data1$batch = as.factor(study_data1$batch)
+study_data1$position = as.factor(study_data1$position)
+study_data1$starter = as.factor(study_data1$starter)
+study_data1_aov = lm(acidity~starter+batch+position, data=study_data1)
+# results of aov
+anova(study_data1_aov)
+print(summary(study_data1_aov))
+```
+Effects of starter 2 and 4 seem statistically significant here. 
+
+### Section 2
+```{r, fig.align='center', echo=FALSE}
+# mean comparisons
+library(multcomp)
+data_aov = lm(acidity~starter+batch+position, data = study_data1)
+mean_comparison = glht(data_aov, linfct =mcp(starter="Tukey"))
+print(summary(mean_comparison))
+```
+As can be seen from the results, starter 4 seems to give significant different from other starters, whereas none of the other starters seems to have a significant pairwise difference in their means. This seems to show that only starter 4 has a significant main effect on the lactation of the yogurt.
+
+### Section 4
+```{r, fig.align='center', echo=FALSE}
+# Showing the table of confidence interval for mean diff of main effects of starter with 95% confidence
+print(confint(mean_comparison))
+```
+
+From the result, we can see that starters 4-1, 4-2, 4-3,  and 4-5 do not contain zero in their confidence intevals, and henceforth has significant effect on the response variable.
+
 
 ## Question 4
 
