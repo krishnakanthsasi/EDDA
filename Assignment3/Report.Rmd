@@ -28,7 +28,7 @@ I=3; B=5; N=1
 for (i in 1:B) print((sample(1:(N*I)+(i-1)*3)))
 ```
 
-Each row represents a skill block. The students have been numbered in ascending order (1,2,3 in the first skill group, 4,5,6 in the second, etc.). Each column represents an interface assignment,  meaning student 3 will be assigned interface 1, student 1 to interface 2, and so on. 
+Each row represents a skill block. The students have been numbered in ascending order (1,2,3 in the first skill group, 4,5,6 in the second, etc.). Each column represents an interface assignment for the three students in that category. 
 
 ### Section 2 
 
@@ -47,7 +47,7 @@ The interaction plot shows some non-parallel increases for skill - interface 3 w
 lmsearch <- lm(time~interface+skill,data=search)
 searchaov <- anova(lmsearch)
 
-searchaov$`Pr(>F)`[1]
+cat(c("p-value:", searchaov$`Pr(>F)`[[1]]))
 ```
 The p-value for an ANOVA test is $>0.05$, which indicates that there is significant evidence to refute the null hypothesis. The search time does not seem to be the same for all interfaces.
 
@@ -57,10 +57,11 @@ The p-value for an ANOVA test is $>0.05$, which indicates that there is signific
 ### Section 5
 
 ```{r, fig.align='center'}
+par(mfrow=c(1,2))
 qqnorm(residuals(lmsearch))
-plot(fitted(lmsearch),residuals(lmsearch))
+plot(fitted(lmsearch),residuals(lmsearch),main='Scatterplot of residuals')
 ```
-The QQ-plot seems somewhat curved, and the scatterplot looks normal. 
+The QQ-plot seems somewhat curved; the scatterplot looks normal. 
 
 ### Section 6 
 
@@ -68,12 +69,11 @@ The QQ-plot seems somewhat curved, and the scatterplot looks normal.
 friedman.test(time,interface, skill)
 ```
 
-The p-value for no treatment effect is `r cat(round(friedman.test(time,interface, skill)[[3]],3))`. The p-value is smaller than $\alpha$, so the null should be rejected. There is an effect of interface present. 
+The p-value for no treatment effect is `r round(friedman.test(time,interface, skill)[[3]],3)`. The p-value is smaller than $\alpha$, so the null should be rejected. There is an effect of interface present. 
 
 ### Section 7
 
 ```{r, fig.align='center'}
-search
 searchaov2 <- lm(time~interface)
 anova(searchaov2)
 par(mfrow=c(1,1)); qqnorm(residuals(searchaov2))
@@ -221,7 +221,7 @@ The p-value is almost equal (`r round(chisq.test(xtabs(~medicin+nausea))[[3]],3)
 This question investigates which explanatory variables are appropriate for a linear regression model where oxidant is the response variable.
 
 ### Section 1
-Pair-wise scatter plot of all variables except day and id can be seen below. From this figure it can be said that variables wind and temperature show some linearity against oxidant. Also, wind and temperature pair scatter plot points out that the possibility of collinearity. This may be a problem since we are interested in independent variables to prevent some problems such as over fitting.
+Pair-wise scatter plot of all variables except day and id can be seen below. This figure seems to indicate that variables wind and temperature show some linearity against oxidant. Also, wind and temperature pair scatter plot points out that the possibility of colinearity. This may be a problem since we are interested in independent variables to prevent problems such as overfitting.
 
 ```{r, fig.align='center', echo=FALSE}
 airPollution = read.table("./data/airpollution.txt", header = TRUE)
@@ -293,7 +293,7 @@ multiSum = summary(multiModel)
 round(multiSum$coefficients, 6)
 ```
 
-After removing the variable humidty, the p-value of remaining variables are less than 0.05, so we keep these variables as our explanatory variables for the multiple regression model. Results of the remaining variables can be seen below.
+After removing the variable humidity, the p-value of remaining variables are less than 0.05, so we keep these variables as our explanatory variables for the multiple regression model. Results of the remaining variables can be seen below.
 
 ```{r, echo=FALSE}
 multiModel = lm(oxidant ~ wind + temperature, data = airPollution)
@@ -333,7 +333,7 @@ Since the correlation among wind and temperature is `r mdlsm$r.squared` which in
 
 ## Question 7
 
-In this question, a linear regression model is invesitgated for the given dataset of crime expenses.
+In this question, a linear regression model is investigated for the given dataset of crime expenses.
 
 ```{r, echo=FALSE, fig.align='center'}
 expensesCrime = read.table("./data/expensescrime.txt", header = TRUE)
@@ -347,9 +347,9 @@ From the pair-wise scatter plot above, the relationships among variables are not
 pairs(expensesCrime[-1])
 ```
 
-From this figure, we can say; population, employment, and lawyer variables are collinear. We will keep this information when we are adding and removing variables. Collinear variables may cause overfitting which will perform good on the data set, but poorly on real data. We also used $R^2$ test to check correlation among these variables.
+From this figure, we can say; population, employment, and lawyer variables are colinear. We will keep this information when we are adding and removing variables. Colinear variables may cause overfitting, meaning they will perform well on the data set but poorly on other data. We also used $R^2$ test to check correlation among these variables.
 
-For this question, we chose to use step-down strategy to build a multi linear regression model. After checking pair-wise scatter plots, we inspected the data set for possible outliers. To detect possible influence points, we used Cook's distance. Results of Cook's distance on $log(Dataset)$ can be seen below.
+For this question, we chose to use step-down strategy to build a multilinear regression model. After checking pair-wise scatter plots, we inspected the data set for possible outliers. To detect possible influence points, we used Cook's distance. Results of Cook's distance on $log(Dataset)$ can be seen below.
 
 ```{r, fig.align='center'}
 model = lm(expend ~ bad + crime + lawyers + employ + pop, data = expensesCrime[-1])
@@ -381,7 +381,7 @@ modelA = lm(employ ~ lawyers, data = newData)
 sumA = summary(modelA)
 ```
 
-Remember, in the beginning of our analysis we suspected that the variables lawyers and employ may be colliniear. To test this suspicion, we employed $R^2$ test. The $R^2$ value of the test is `r sumA$r.squared`, therefore using both of these variables are dangerous. We choose to use the variable employ instead of lawyers.
+At the beginning of the analysis we suspected that the variables lawyers and employ may be colinear. To test this suspicion, we employed an $R^2$ test. The $R^2$ value of the test is `r sumA$r.squared`, therefore using both of these variables are dangerous. We choose to use the variable employ instead of lawyers.
 
 The final multi regression model we ended up with can be seen below with the corresponding equation following.
 
@@ -392,7 +392,7 @@ summary(model)
 
 $Y = `r model$coefficients[1]` + (`r model$coefficients[2]` * crime) + (`r model$coefficients[3]` * employ)$
 
-Finally, residuals of the model are investigated. QQ-Plot and the scatter plot of fitted values vs residuals can be seen below.
+Finally, residuals of the model are investigated. QQ-Plot and the scatterplot of fitted values vs residuals can be seen below.
 
 ```{r, echo=FALSE}
 par(mfrow=c(1,2))
@@ -400,7 +400,7 @@ qqnorm(residuals(model))
 plot(fitted(model), residuals(model))
 ```
 
-From the first graph, it can be seen that the residuals are not from a standard normal distribution, however, they are from a normal distribution since it still forms a line. Observations on the scatter plot does not yield any particular shape. Moreover, redidual scatter plots shown below demonstrate fairly random orders indicating a the current model is a good fit for the problem.
+The first graph shows that the residuals are not from a standard normal distribution. Nonetheless, they are from a normal distribution since it still forms a line. Observations on the scatterplot do not yield any particular shape. Moreover, residual scatter plots shown below demonstrate fairly random orders indicating a the current model is a good fit for the problem.
 
 ```{r, echo=FALSE, fig.align='center'}
 par(mfrow=c(1,2))
