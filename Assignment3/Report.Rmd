@@ -34,10 +34,10 @@ print(design)
 study_data = read.table(file = "./data/bread.txt", header = TRUE)
 
 boxplot(hours~environment, data = study_data, xlab = "Temperature", ylab = "Hours to decay", main = "Box plot of hours vs temperature")
-boxplot(hours~humidity, data = study_data, xlab = "Humidity", ylab = "Hours to decay", main = "Box plot of hours vs humidity")
+boxplot(hours~humidity, data = study_data, xlab = "Humidity", ylab = "Hours to decay")
 
-interaction.plot(study_data$environment, study_data$humidity, study_data$hours, trace.label = "Humidity", xlab = "Temperature", ylab = "Mean of hours to decay ", main = "Interaction between hours and temperature")
-interaction.plot(study_data$humidity, study_data$environment, study_data$hours, trace.label = "Temperature", xlab = "Humidity", ylab = "Mean of hours to decay ", main = "Interaction between hours and humidity")
+interaction.plot(study_data$environment, study_data$humidity, study_data$hours, trace.label = "Humidity", xlab = "Temperature", ylab = "Mean of hours to decay ")
+interaction.plot(study_data$humidity, study_data$environment, study_data$hours, trace.label = "Temperature", xlab = "Humidity", ylab = "Mean of hours to decay ")
 
 
 
@@ -63,7 +63,7 @@ Estimating which of the factors has greater main effect is not be relevant here 
 ### Section 5
 ```{r, fig.align='centre', echo=FALSE}
 #Diagnostics
-qqnorm(residuals(study_data_aov), main = "Normal Q-Q plot of the residuals of the AOV test")
+qqnorm(residuals(study_data_aov), )
 ```
 
 Normality is present. There are two outliers present however, removing them would give better results.
