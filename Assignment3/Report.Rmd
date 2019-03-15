@@ -24,7 +24,7 @@ search <- read.table("data/search.txt")
 ```
 
 ```{r,fig.align='center'}
-I=4; B=5; N=1
+I=3; B=5; N=1
 for (i in 1:B) print((sample(1:(N*I)+(i-1)*3)))
 ```
 
@@ -46,10 +46,10 @@ The interaction plot shows some non-parallel increases for skill - interface 3 w
 ```{r,fig.align='center'}
 lmsearch <- lm(time~interface+skill,data=search)
 searchaov <- anova(lmsearch)
-searchaov
-pv <- searchaov$`Pr(>F)`[1]
+
+searchaov$`Pr(>F)`[1]
 ```
-The p-value for an ANOVA test is >`r cat(round( pv,3))`, which indicates that there is significant evidence to refute the null hypothesis. The search time does not seem to be the same for all interfaces.
+The p-value for an ANOVA test is $>0.05$, which indicates that there is significant evidence to refute the null hypothesis. The search time does not seem to be the same for all interfaces.
 
 ### Section 4
 
