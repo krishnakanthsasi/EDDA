@@ -135,3 +135,75 @@ mdlsm = summary(mdl)
 Since the correlation among wind and temperature is `r mdlsm$r.squared` which indicates it is insignificant by the $R^2$ test, we believe this model is appropriate.  
 
 ## Question 7
+
+In this question, a linear regression model is invesitgated for the given dataset of crime expenses.
+
+```{r, echo=FALSE, fig.align='center'}
+expensesCrime = read.table("./data/expensescrime.txt", header = TRUE)
+pairs(expensesCrime[-1])
+expensesCrime[-1] = log(expensesCrime[-1])
+```
+
+From the pair-wise scatter plot above, the relationships among variables are not so obvious, therefore we took the $log$ of the variables which can be seen in the figure below.
+
+```{r, echo=FALSE, fig.align='center'}
+pairs(expensesCrime[-1])
+```
+
+From this figure, we can say; population, employment, and lawyer variables are collinear. We will keep this information when we are adding and removing variables. Collinear variables may cause overfitting which will perform good on the data set, but poorly on real data. We also used $R^2$ test to check correlation among these variables.
+
+For this question, we chose to use step-down strategy to build a multi linear regression model. After checking pair-wise scatter plots, we inspected the data set for possible outliers. To detect possible influence points, we used Cook's distance. Results of Cook's distance on $log(Dataset)$ can be seen below.
+
+```{r, fig.align='center'}
+model = lm(expend ~ bad + crime + lawyers + employ + pop, data = expensesCrime[-1])
+round(cooks.distance(model), 3)
+plot(1:51, cooks.distance(model))
+```
+
+From the results, we can see that rows listed below have greater impact on the solution. In order to minimize the effects of outliers on our regression model, one point is removed from the data set which can be seen below.
+
+```{r, echo=FALSE}
+rows = round(cooks.distance(model), 3) > 1
+expensesCrime[rows,]
+```
+
+After we inspected the data set about collinearity and influence points, we can now start to construct our model. As shown above, we started with a model using all explanatory variables. We then eliminated variables with high p-values until none of the variables have p-value greater than $0.05$. The model we ended up with this approach is shown below.
+
+```{r}
+newData = expensesCrime[!rows, ]
+model = lm(expend ~ crime + lawyers + employ, data = newData)
+summary(model)
+```
+
+The equation of the model can be seen below:
+
+$Y = `r model$coefficients[1]` + (`r model$coefficients[2]` * crime) + (`r model$coefficients[3]` * lawyers) + (`r model$coefficients[4]` * employ)$
+
+```{r, echo=FALSE}
+modelA = lm(employ ~ lawyers, data = newData)
+sumA = summary(modelA)
+```
+
+Remember, in the beginning of our analysis we suspected that the variables lawyers and employ may be colliniear. To test this suspicion, we employed $R^2$ test. The $R^2$ value of the test is `r sumA$r.squared`, therefore using both of these variables are dangerous. We choose to use the variable employ instead of lawyers.
+
+The final multi regression model we ended up with can be seen below with the corresponding equation following.
+
+```{r}
+model = lm(expend ~ crime + employ, data = newData)
+summary(model)
+```
+
+$Y = `r model$coefficients[1]` + (`r model$coefficients[2]` * crime) + (`r model$coefficients[3]` * employ)$
+
+Finally, residuals of the model are investigated. QQ-Plot and the scatter plot of fitted values vs residuals can be seen below.
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+qqnorm(residuals(model))
+plot(fitted(model), residuals(model))
+```
+
+From the first graph, it can be seen that the residuals are not from a standard normal distribution, however, they are from a normal distribution since it still forms a line. Observations on the scatter plot does not yield any particular shape, thus we conclude our investigation of the dataset with our last model which can also be seen below again.
+
+$Y = `r model$coefficients[1]` + (`r model$coefficients[2]` * crime) + (`r model$coefficients[3]` * employ)$
+
