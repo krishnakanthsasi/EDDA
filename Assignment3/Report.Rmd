@@ -1,0 +1,137 @@
+---
+title: "Assignment 3"
+author: "Tommy Maaiveld, Krishnakanth Sasi, Halil Kaan Kara, Group 6"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, }
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+## Question 1
+
+## Question 2
+
+## Question 3
+
+## Question 4
+
+## Question 5
+
+## Question 6
+This question investigates which explanatory variables are appropriate for a linear regression model where oxidant is the response variable.
+
+### Section 1
+Pair-wise scatter plot of all variables except day and id can be seen below. From this figure it can be said that variables wind and temperature show some linearity against oxidant. Also, wind and temperature pair scatter plot points out that the possibility of collinearity. This may be a problem since we are interested in independent variables to prevent some problems such as over fitting.
+
+```{r, fig.align='center', echo=FALSE}
+airPollution = read.table("./data/airpollution.txt", header = TRUE)
+pairs(~ wind + temperature + humidity + insolation + oxidant, data = airPollution)
+```
+
+### Section 2
+
+The figure below shows 4 different simple regression models as the starting point for step-up method of multiple regression. As said before, wind and temperature seem to be highly linear with oxidant. Humidity seems to be somewhat linear to oxidant but insolation seems to be constant for all variable pairs.
+
+```{r, fig.align='center', echo=FALSE}
+model1 = lm(oxidant ~ wind, data = airPollution)
+model2 = lm(oxidant ~ temperature, data = airPollution)
+model3 = lm(oxidant ~ humidity, data = airPollution)
+model4 = lm(oxidant ~ insolation, data = airPollution)
+
+par(mfrow=c(2,2))
+plot(oxidant ~ wind, data = airPollution); abline(model1)
+plot(oxidant ~ temperature, data = airPollution); abline(model2)
+plot(oxidant ~ humidity, data = airPollution); abline(model3)
+plot(oxidant ~ insolation, data = airPollution); abline(model1)
+
+sum1 = summary(model1)
+sum2 = summary(model2)
+sum3 = summary(model3)
+sum4 = summary(model4)
+```
+
+For the best starting point, we looked at the $R^2$ of all 4 models. From left to right, we got `r round(sum1$r.squared, 3)`, `r round(sum2$r.squared, 3)`, `r round(sum3$r.squared, 3)`, `r round(sum4$r.squared, 3)`. Since the top-left model which has wind as the only explanatory variable, has the highest $R^2$ value, we start with it.
+
+```{r, echo=FALSE}
+stepUpModel1 = lm(oxidant ~ wind + temperature, data = airPollution)
+stepUpSum1 = summary(stepUpModel1)
+stepUpModel = lm(oxidant ~ wind + humidity, data = airPollution)
+stepUpSum2 = summary(stepUpModel)
+stepUpModel = lm(oxidant ~ wind + insolation, data = airPollution)
+stepUpSum3 = summary(stepUpModel)
+```
+
+In next iteration, we add temperature, humidity, and insolation in this order. After adding these variables, we again calculate their $R^2$ values. The values we get in the same order are `r round(stepUpSum1$r.squared, 3)`, `r round(stepUpSum2$r.squared, 3)`, and `r round(stepUpSum3$r.squared, 3)`. Among these values, we chose to add temperature since it has the largest $R^2$ value.
+
+```{r, echo=FALSE}
+stepUpModel = lm(oxidant ~ wind + temperature + humidity, data = airPollution)
+stepUpSum4 = summary(stepUpModel)
+stepUpModel = lm(oxidant ~ wind + temperature + insolation, data = airPollution)
+stepUpSum5 = summary(stepUpModel)
+```
+In next iteration, we check addition of humidity and insolation in this order. The $R^2$ value we get from addition of these variables are `r round(stepUpSum4$r.squared, 3)`, `r round(stepUpSum5$r.squared, 3)`. Observations from these values showed insignificant changes, so we decided to use the model with 2 explanatory variables.
+
+In result, the equation we get is:
+
+$Y = `r stepUpModel1$coefficients[1]` + (`r stepUpModel1$coefficients[2]`) * wind + (`r stepUpModel1$coefficients[3]`) * temperature + error$
+
+### Section 3
+
+In this section, we are going to apply step-down approach to find multiple linear regression model. Below is the summary of the model with all variables except id and days are shown. In this approach, we take out the variable with the largest p-value until all variables' p-value are below $0.05$.
+
+```{r, echo=FALSE}
+multiModel = lm(oxidant ~ wind + temperature + humidity + insolation, data = airPollution)
+multiSum = summary(multiModel)
+round(multiSum$coefficients, 6)
+```
+
+Initially, we removed insolation from the model since it had the greatest p-value. Results of the re-evaluation of the model without the variable insolation can be seen below. From this figure, it is apparent that the variable humidity needs to be removed.
+
+```{r, echo=FALSE}
+multiModel = lm(oxidant ~ wind + temperature + humidity, data = airPollution)
+multiSum = summary(multiModel)
+round(multiSum$coefficients, 6)
+```
+
+After removing the variable humidty, the p-value of remaining variables are less than 0.05, so we keep these variables as our explanatory variables for the multiple regression model. Results of the remaining variables can be seen below.
+
+```{r, echo=FALSE}
+multiModel = lm(oxidant ~ wind + temperature, data = airPollution)
+multiSum = summary(multiModel)
+round(multiSum$coefficients, 6)
+```
+
+Finally, the model with this approach uses 2 variables; wind and temperature to estimate the variable oxidant.
+
+### Section 4
+
+From the models shown in Section 2 and 3, we ended up with same model. Our estimations for the parameters of the final model can be seen below.
+
+$Y = `r multiModel$coefficients[1]` + (`r multiModel$coefficients[2]`) * wind + (`r multiModel$coefficients[3]`) * temperature + error$
+
+### Section 5
+
+Normality of the residuals for the chosen model shown in Section 4 can be seen below. The figure on the left is the plot of fitted data against residuals.
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+qqnorm(residuals(multiModel))
+plot(fitted(multiModel), residuals(multiModel))
+```
+
+From the left figure, it can be assumed that the residuals are from a normal distribution. From the left figure, we do not observe any specific shapes. One suspicion we had was the possibility of collinearity of variables wind and temperature. We can test whether these two variables are collinear with the $R^2$ test. Scatter plot of wind and temperature can be seen below.
+
+```{r, echo=FALSE}
+par(mfrow=c(1,1))
+plot(wind ~ temperature, data = airPollution)
+
+mdl = lm(wind ~ temperature, data = airPollution)
+mdlsm = summary(mdl)
+```
+
+Since the correlation among wind and temperature is `r mdlsm$r.squared` which indicates it is insignificant by the $R^2$ test, we believe this model is appropriate.  
+
+## Question 7
