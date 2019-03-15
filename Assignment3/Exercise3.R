@@ -30,3 +30,8 @@ print(summary(mean_comparison))
 # whereas none of the other starters seems to have a significant pairwise difference in their means
 # This seems to show that only starter 4 has a significant main effect on the lactation of the yogurt.
 
+# Showing the table of confidence interval for mean diff of main effects of starter with 95% confidence
+print(confint(mean_comparison))
+
+# From the result, we can see that 4-1, 4-2, 4-3,  and 4-5 do not contain zero, and henceforth
+# has main effect on the process with 95% confidence.
