@@ -43,4 +43,6 @@ plot(fitted(study_data_aov),residuals(study_data_aov))
 # The residual spread seems homogenous except for two fitted points around 230-240. Removing the these outliers 
 # would produce better results. 
 
+# There are two outliers.
+
 
