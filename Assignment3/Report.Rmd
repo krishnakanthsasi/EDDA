@@ -6,7 +6,10 @@ output: pdf_document
 
 ```{r setup, include=FALSE, }
 knitr::opts_chunk$set(echo = TRUE)
+
+library(lme4)
 ```
+
 
 ## Introduction
 
@@ -14,12 +17,206 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 2
 
+### Section 1
+
+```{r, fig.align='center', echo=FALSE}
+search <- read.table("data/search.txt")
+```
+
+```{r,fig.align='center'}
+I=4; B=5; N=1
+for (i in 1:B) print((sample(1:(N*I)+(i-1)*3)))
+```
+
+Each row represents a skill block. The students have been numbered in ascending order (1,2,3 in the first skill group, 4,5,6 in the second, etc.). Each column represents an interface assignment,  meaning student 3 will be assigned interface 1, student 1 to interface 2, and so on. 
+
+### Section 2 
+
+```{r,fig.align='center'}
+attach(search)
+par(mfrow=c(1,2))
+boxplot(time~skill); boxplot(time~interface)
+interaction.plot(interface, skill,time)
+interaction.plot(skill,interface,time)
+```
+The interaction plot shows some non-parallel increases for skill - interface 3 was faster than interface 2 for skill block 4, and interfaces 1 and 2 scored equally for skill block 1.
+
+### Section 3
+
+```{r,fig.align='center'}
+lmsearch <- lm(time~interface+skill,data=search)
+searchaov <- anova(lmsearch)
+searchaov
+pv <- searchaov$`Pr(>F)`[1]
+```
+The p-value for an ANOVA test is >`r cat(round( pv,3))`, which indicates that there is significant evidence to refute the null hypothesis. The search time does not seem to be the same for all interfaces.
+
+### Section 4
+
+
+### Section 5
+
+```{r, fig.align='center'}
+qqnorm(residuals(lmsearch))
+plot(fitted(lmsearch),residuals(lmsearch))
+```
+The QQ-plot seems somewhat curved, and the scatterplot looks normal. 
+
+### Section 6 
+
+```{r, fig.align='center'}
+friedman.test(time,interface, skill)
+```
+
+The p-value for no treatment effect is `r cat(round(friedman.test(time,interface, skill)[[3]],3))`. The p-value is smaller than $\alpha$, so the null should be rejected. There is an effect of interface present. 
+
+### Section 7
+
+```{r, fig.align='center'}
+search
+searchaov2 <- lm(time~interface)
+anova(searchaov2)
+par(mfrow=c(1,1)); qqnorm(residuals(searchaov2))
+```
+
+Although there are not that many data points, the randomized block design used here ensures that each interface is attempted by exactly one student of each skill level. Thus, the variances in each population of students trying an interface should be roughly equivalent. The qq-plot above shows that the residuals are normally distributed, which means that the assumption of the normality of the populations is not necessarily untrue.
+
 ## Question 3
 
 ## Question 4
 
+```{r, fig.align='center', echo=FALSE}
+par(mfrow=c(1,1))
+cow <- read.table("data/cow.txt")
+```
+
+### Section 1
+
+```{r, fig.align='center'}
+cow$id <- factor(cow$id)
+cowlm <- lm(milk~treatment+per+id,data=cow)
+cat(anova(cowlm)[1,5])
+```
+The p-value for treatment is `r round(anova(cowlm)[1,5],3)`. Therefore, this model seems to indicate that the feed treatment does not affect the volume of milk produced.
+       
+### Section 2
+
+```{r, fig.align='center'}
+cowlmsumm <- summary(cowlm)
+head(cowlmsumm$coefficients, n=2)
+```
+The milk yield of treatment B is estimated to be `r round(cowlmsumm$coefficients[2,1],2)*-1` lower than that of treatment A.
+
+### Section 3
+
+```{r, fig.align='center'}
+cowlmer <- lmer(milk~treatment+order+per+(1|id), data=cow, REML=FALSE)
+cowlmersumm <- summary(cowlmer)
+```
+
+```{r, fig.align='center', echo=FALSE}
+cat("Fixed effects")
+head(cowlmersumm$coefficients,n=3)
+```
+
+The table above shows the fixed effects output of the model. 
+
+```{r, fig.align='center', echo=TRUE}
+cowlmer1 <- lmer(milk~order+per+(1|id), data=cow, REML=FALSE)
+cowlmeraov <- anova(cowlmer1,cowlmer)
+```
+
+p-value of ANOVA with/without treatment variable:
+
+```{r, fig.align='center', include=TRUE}
+pval <- cowlmeraov$`Pr(>Chisq)`[2]
+pval
+```
+
+By performing an ANOVA test between a linear model fitted including the treatment factor to one not including the treatment factor, a p-value of `r round(pval,3)` is obtained. There is still no reason to reject the null hypothesis, but the result is different from that in 4.1. The results under 'Fixed effects' are identical to those obtained in 4.2.
+      
+### Section 4
+
+```{r, fig.align='center'}
+attach(cow)
+cowtest <- t.test(milk[treatment=="A"],milk[treatment=="B"],paired=TRUE)
+cowtest$estimate
+```
+
+Performing an ANOVA test on these samples:
+
+```{r, fig.align='center'}
+aovcow <- lm(milk~treatment+id,data=cow)
+
+aovcowsumm <- summary(aovcow)
+head(aovcowsumm$coefficients,n=2)
+```
+
+Performing a paired t-test yields an equivalent result to a repeated measures experiment where excheangability is assumed. Its result is incompatible with that of 4.1, since that test does not assume there are no time effects, learning effects or dissimilar subjects affecting results. In this experiment, these assumptions do not seem safe, meaning a crossover design is more appealing. This paired t-test does not produce a valid test for difference in milk production.
+      
 ## Question 5
 
+```{r, fig.align='center', echo=FALSE}
+nausea.table <- read.table("data/nauseatable.txt")
+```
+
+### Section 1
+
+```{r, fig.align='center'}
+nausea <- c(rep(1,nausea.table[1,2]), rep(0,nausea.table[1,1]),
+            rep(1,nausea.table[2,2]), rep(0,nausea.table[2,1]),
+            rep(1,nausea.table[3,2]), rep(0,nausea.table[3,1]))
+
+medicin <- factor(rep(1:3, c((nausea.table[1,1]+nausea.table[1,2]),
+                             (nausea.table[2,1]+nausea.table[2,2]),
+                             (nausea.table[3,1]+nausea.table[3,2]))), 
+                  labels=c("chlor","pent100","pent150"))
+
+nausea.frame <- data.frame(nausea,medicin)
+```
+
+### Section 2
+
+```{r, fig.align='center'}
+xtabs(~medicin+nausea)
+```
+
+This representation is similar to the original nausea.table layout.
+
+### Section 3
+
+```{r, fig.align='center', echo=FALSE, include=FALSE}
+attach(nausea.frame)
+```
+
+```{r, fig.align='center'}
+B <- 1000
+tstar <- numeric(B)
+for(i in 1:B)
+{
+  medicinstar <- sample(medicin) 
+  tstar[i] <- chisq.test(xtabs(~medicinstar+nausea))[[1]]
+}
+
+myt <- chisq.test(xtabs(~medicin+nausea))[[1]]
+
+hist(tstar)
+abline(v=myt, col='red')
+
+pr <- sum(tstar>myt)/B
+pr
+```
+
+The test statistic obtained for the labeling in the experiment is higher than 95% of the test statistics for the permuted labels. The p-value is lower than $\alpha$ (`r round(pr,3)`), which could warrant a rejection of the null hypothesis. This indicates the medicines do not work equally well against nausea.
+
+### Section 4
+
+```{r, fig.align='center', echo=FALSE}
+chisq.test(xtabs(~medicin+nausea))[[3]]
+```
+
+The p-value is almost equal (`r round(chisq.test(xtabs(~medicin+nausea))[[3]],3)`) to that of the permutation test in 5.3 (0.039). Both tests detect a relationship between the variables 'type of drug' and 'incidence of nausea', making independence unlikely.
+      
 ## Question 6
 This question investigates which explanatory variables are appropriate for a linear regression model where oxidant is the response variable.
 

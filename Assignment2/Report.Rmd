@@ -422,7 +422,7 @@ boxplot(df[1:12,1]-df[1:12,2],df[13:24,1]-df[13:24,2],
 t.test(df[1:12,1],df[1:12,2],paired=TRUE)
 t.test(df[13:24,1], df[13:24,2], paired=TRUE)
 ```
-For the lemonade group, there is no cause to reject the null hypothesis and assume that the means are different. The same holds for the energy group, although the p-value is lower for this group (p-value = 0.1264).
+For the lemonade group, there is no cause to reject the null hypothesis and assume that the means are different. The same holds for the energy group, although the p-value is lower for this group (p-value = 0.126).
 
 ### Section 3
 
@@ -430,6 +430,7 @@ For the lemonade group, there is no cause to reject the null hypothesis and assu
 df$differences <- df$before - df$after
 t.test(df[1:12,5],df[13:24,5])
 ```
+Since the p-value is 0.159, there is no cause to reject the null hypothesis and assume that the means are different.
 
 ### Section 4
 

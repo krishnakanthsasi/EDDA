@@ -1,0 +1,692 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Assignment 3},
+            pdfauthor={Tommy Maaiveld, Krishnakanth Sasi, Halil Kaan Kara, Group 6},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Assignment 3}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Tommy Maaiveld, Krishnakanth Sasi, Halil Kaan Kara, Group 6}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\subsection{Introduction}\label{introduction}
+
+\subsection{Question 1}\label{question-1}
+
+\subsection{Question 2}\label{question-2}
+
+\subsubsection{Section 1}\label{section-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{I=}\DecValTok{4}\NormalTok{; B=}\DecValTok{5}\NormalTok{; N=}\DecValTok{1}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{B) }\KeywordTok{print}\NormalTok{((}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\NormalTok{(N}\OperatorTok{*}\NormalTok{I)}\OperatorTok{+}\NormalTok{(i}\OperatorTok{-}\DecValTok{1}\NormalTok{)}\OperatorTok{*}\DecValTok{3}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4 3 2 1
+## [1] 7 6 5 4
+## [1]  9  7 10  8
+## [1] 11 12 13 10
+## [1] 15 14 16 13
+\end{verbatim}
+
+Each row represents a skill block. The students have been numbered in
+ascending order (1,2,3 in the first skill group, 4,5,6 in the second,
+etc.). Each column represents an interface assignment, meaning student 3
+will be assigned interface 1, student 1 to interface 2, and so on.
+
+\subsubsection{Section 2}\label{section-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{attach}\NormalTok{(search)}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{boxplot}\NormalTok{(time}\OperatorTok{~}\NormalTok{skill); }\KeywordTok{boxplot}\NormalTok{(time}\OperatorTok{~}\NormalTok{interface)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-3-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{interaction.plot}\NormalTok{(interface, skill,time)}
+\KeywordTok{interaction.plot}\NormalTok{(skill,interface,time)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-3-2} \end{center}
+
+The interaction plot shows some non-parallel increases for skill -
+interface 3 was faster than interface 2 for skill block 4, and
+interfaces 1 and 2 scored equally for skill block 1.
+
+\subsubsection{Section 3}\label{section-3}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmsearch <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(time}\OperatorTok{~}\NormalTok{interface}\OperatorTok{+}\NormalTok{skill,}\DataTypeTok{data=}\NormalTok{search)}
+\NormalTok{searchaov <-}\StringTok{ }\KeywordTok{anova}\NormalTok{(lmsearch)}
+\NormalTok{pv <-}\StringTok{ }\NormalTok{searchaov}\OperatorTok{$}\StringTok{`}\DataTypeTok{Pr(>F)}\StringTok{`}\NormalTok{[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+The p-value for an ANOVA test is \textgreater{}, which indicates that
+there is significant evidence to refute the null hypothesis. The search
+time does not seem to be the same for all interfaces.
+
+\subsubsection{Section 4}\label{section-4}
+
+\subsection{Question 3}\label{question-3}
+
+\subsection{Question 4}\label{question-4}
+
+\subsubsection{Section 1}\label{section-1-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cow}\OperatorTok{$}\NormalTok{id <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(cow}\OperatorTok{$}\NormalTok{id)}
+\NormalTok{cowlm <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(milk}\OperatorTok{~}\NormalTok{treatment}\OperatorTok{+}\NormalTok{per}\OperatorTok{+}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{cow)}
+\KeywordTok{cat}\NormalTok{(}\KeywordTok{anova}\NormalTok{(cowlm)[}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 0.7514699
+\end{verbatim}
+
+The p-value for treatment is 0.751. Therefore, this model seems to
+indicate that the feed treatment does not affect the volume of milk
+produced.
+
+\subsubsection{Section 2}\label{section-2-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cowlmsumm <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(cowlm)}
+\KeywordTok{head}\NormalTok{(cowlmsumm}\OperatorTok{$}\NormalTok{coefficients, }\DataTypeTok{n=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept)    32.69  1.6509045 19.8012664 2.094166e-07
+## treatmentB     -0.51  0.7466497 -0.6830513 5.165364e-01
+\end{verbatim}
+
+The milk yield of treatment B is estimated to be 0.51 lower than that of
+treatment A.
+
+\subsubsection{Section 3}\label{section-3-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cowlmer <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(milk}\OperatorTok{~}\NormalTok{treatment}\OperatorTok{+}\NormalTok{order}\OperatorTok{+}\NormalTok{per}\OperatorTok{+}\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{data=}\NormalTok{cow, }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{cowlmersumm <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(cowlmer)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fixed effects
+\end{verbatim}
+
+\begin{verbatim}
+##             Estimate Std. Error    t value
+## (Intercept)    40.89  5.8892712  6.9431342
+## treatmentB     -0.51  0.6584823 -0.7745083
+## orderBA        -3.47  7.7684653 -0.4466777
+\end{verbatim}
+
+The table above shows the fixed effects output of the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cowlmer1 <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(milk}\OperatorTok{~}\NormalTok{order}\OperatorTok{+}\NormalTok{per}\OperatorTok{+}\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{id), }\DataTypeTok{data=}\NormalTok{cow, }\DataTypeTok{REML=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{cowlmeraov <-}\StringTok{ }\KeywordTok{anova}\NormalTok{(cowlmer1,cowlmer)}
+\end{Highlighting}
+\end{Shaded}
+
+p-value of ANOVA with/without treatment variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pval <-}\StringTok{ }\NormalTok{cowlmeraov}\OperatorTok{$}\StringTok{`}\DataTypeTok{Pr(>Chisq)}\StringTok{`}\NormalTok{[}\DecValTok{2}\NormalTok{]}
+\NormalTok{pval}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.4460314
+\end{verbatim}
+
+By performing an ANOVA test between a linear model fitted including the
+treatment factor to one not including the treatment factor, a p-value of
+0.446 is obtained. There is still no reason to reject the null
+hypothesis, but the result is different from that in 4.1. The results
+under `Fixed effects' are identical to those obtained in 4.2.
+
+\subsubsection{Section 4}\label{section-4-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{attach}\NormalTok{(cow)}
+\NormalTok{cowtest <-}\StringTok{ }\KeywordTok{t.test}\NormalTok{(milk[treatment}\OperatorTok{==}\StringTok{"A"}\NormalTok{],milk[treatment}\OperatorTok{==}\StringTok{"B"}\NormalTok{],}\DataTypeTok{paired=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{cowtest}\OperatorTok{$}\NormalTok{estimate}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## mean of the differences 
+##               0.2444444
+\end{verbatim}
+
+Performing an ANOVA test on these samples:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{aovcow <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(milk}\OperatorTok{~}\NormalTok{treatment}\OperatorTok{+}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{cow)}
+
+\NormalTok{aovcowsumm <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(aovcow)}
+\KeywordTok{head}\NormalTok{(aovcowsumm}\OperatorTok{$}\NormalTok{coefficients,}\DataTypeTok{n=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               Estimate Std. Error    t value     Pr(>|t|)
+## (Intercept) 28.9722222   1.722625 16.8186433 1.582254e-07
+## treatmentB  -0.2444444   1.089484 -0.2243672 8.280959e-01
+\end{verbatim}
+
+Performing a paired t-test yields an equivalent result to a repeated
+measures experiment where excheangability is assumed. Its result is
+incompatible with that of 4.1, since that test does not assume there are
+no time effects, learning effects or dissimilar subjects affecting
+results. In this experiment, these assumptions do not seem safe, meaning
+a crossover design is more appealing. This paired t-test does not
+produce a valid test for difference in milk production.
+
+\subsection{Question 5}\label{question-5}
+
+\subsubsection{Section 1}\label{section-1-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nausea <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,nausea.table[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{]), }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,nausea.table[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{]),}
+            \KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,nausea.table[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{]), }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,nausea.table[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]),}
+            \KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,nausea.table[}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{]), }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,nausea.table[}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{]))}
+
+\NormalTok{medicin <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{, }\KeywordTok{c}\NormalTok{((nausea.table[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{nausea.table[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{]),}
+\NormalTok{                             (nausea.table[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{nausea.table[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{]),}
+\NormalTok{                             (nausea.table[}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{+}\NormalTok{nausea.table[}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{]))), }
+                  \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"chlor"}\NormalTok{,}\StringTok{"pent100"}\NormalTok{,}\StringTok{"pent150"}\NormalTok{))}
+
+\NormalTok{nausea.frame <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(nausea,medicin)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Section 2}\label{section-2-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{xtabs}\NormalTok{(}\OperatorTok{~}\NormalTok{medicin}\OperatorTok{+}\NormalTok{nausea)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          nausea
+## medicin     0   1
+##   chlor   100  52
+##   pent100  32  35
+##   pent150  48  37
+\end{verbatim}
+
+This representation is similar to the original nausea.table layout.
+
+\subsubsection{Section 3}\label{section-3-2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{B <-}\StringTok{ }\DecValTok{1000}
+\NormalTok{tstar <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(B)}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{B)}
+\NormalTok{\{}
+\NormalTok{  medicinstar <-}\StringTok{ }\KeywordTok{sample}\NormalTok{(medicin) }
+\NormalTok{  tstar[i] <-}\StringTok{ }\KeywordTok{chisq.test}\NormalTok{(}\KeywordTok{xtabs}\NormalTok{(}\OperatorTok{~}\NormalTok{medicinstar}\OperatorTok{+}\NormalTok{nausea))[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{\}}
+
+\NormalTok{myt <-}\StringTok{ }\KeywordTok{chisq.test}\NormalTok{(}\KeywordTok{xtabs}\NormalTok{(}\OperatorTok{~}\NormalTok{medicin}\OperatorTok{+}\NormalTok{nausea))[[}\DecValTok{1}\NormalTok{]]}
+
+\KeywordTok{hist}\NormalTok{(tstar)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\NormalTok{myt, }\DataTypeTok{col=}\StringTok{'red'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-18-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pr <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(tstar}\OperatorTok{>}\NormalTok{myt)}\OperatorTok{/}\NormalTok{B}
+\NormalTok{pr}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.04
+\end{verbatim}
+
+The test statistic obtained for the labeling in the experiment is higher
+than 95\% of the test statistics for the permuted labels. The p-value is
+lower than \(\alpha\) (0.04), which could warrant a rejection of the
+null hypothesis. This indicates the medicines do not work equally well
+against nausea.
+
+\subsubsection{Section 4}\label{section-4-2}
+
+\begin{verbatim}
+## [1] 0.03642928
+\end{verbatim}
+
+The p-value is almost equal (0.036) to that of the permutation test in
+5.3 (0.039). Both tests detect a relationship between the variables
+`type of drug' and `incidence of nausea', making independence unlikely.
+
+\subsection{Question 6}\label{question-6}
+
+This question investigates which explanatory variables are appropriate
+for a linear regression model where oxidant is the response variable.
+
+\subsubsection{Section 1}\label{section-1-3}
+
+Pair-wise scatter plot of all variables except day and id can be seen
+below. From this figure it can be said that variables wind and
+temperature show some linearity against oxidant. Also, wind and
+temperature pair scatter plot points out that the possibility of
+collinearity. This may be a problem since we are interested in
+independent variables to prevent some problems such as over fitting.
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-20-1} \end{center}
+
+\subsubsection{Section 2}\label{section-2-3}
+
+The figure below shows 4 different simple regression models as the
+starting point for step-up method of multiple regression. As said
+before, wind and temperature seem to be highly linear with oxidant.
+Humidity seems to be somewhat linear to oxidant but insolation seems to
+be constant for all variable pairs.
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-21-1} \end{center}
+
+For the best starting point, we looked at the \(R^2\) of all 4 models.
+From left to right, we got 0.586, 0.576, 0.124, 0.255. Since the
+top-left model which has wind as the only explanatory variable, has the
+highest \(R^2\) value, we start with it.
+
+In next iteration, we add temperature, humidity, and insolation in this
+order. After adding these variables, we again calculate their \(R^2\)
+values. The values we get in the same order are 0.777, 0.591, and 0.661.
+Among these values, we chose to add temperature since it has the largest
+\(R^2\) value.
+
+In next iteration, we check addition of humidity and insolation in this
+order. The \(R^2\) value we get from addition of these variables are
+0.796, 0.782. Observations from these values showed insignificant
+changes, so we decided to use the model with 2 explanatory variables.
+
+In result, the equation we get is:
+
+\(Y = -5.2033371 + (-0.4270576) * wind + (0.5203527) * temperature + error\)
+
+\subsubsection{Section 3}\label{section-3-3}
+
+In this section, we are going to apply step-down approach to find
+multiple linear regression model. Below is the summary of the model with
+all variables except id and days are shown. In this approach, we take
+out the variable with the largest p-value until all variables' p-value
+are below \(0.05\).
+
+\begin{verbatim}
+##               Estimate Std. Error   t value Pr(>|t|)
+## (Intercept) -15.493700  13.506469 -1.147132 0.262187
+## wind         -0.442911   0.086778 -5.103951 0.000028
+## temperature   0.569334   0.139771  4.073347 0.000410
+## humidity      0.092917   0.065350  1.421833 0.167431
+## insolation    0.022752   0.050670  0.449031 0.657278
+\end{verbatim}
+
+Initially, we removed insolation from the model since it had the
+greatest p-value. Results of the re-evaluation of the model without the
+variable insolation can be seen below. From this figure, it is apparent
+that the variable humidity needs to be removed.
+
+\begin{verbatim}
+##               Estimate Std. Error   t value Pr(>|t|)
+## (Intercept) -16.606966  13.071536 -1.270468 0.215169
+## wind         -0.446196   0.085131 -5.241282 0.000018
+## temperature   0.601896   0.117638  5.116524 0.000025
+## humidity      0.098498   0.063164  1.559398 0.130993
+\end{verbatim}
+
+After removing the variable humidty, the p-value of remaining variables
+are less than 0.05, so we keep these variables as our explanatory
+variables for the multiple regression model. Results of the remaining
+variables can be seen below.
+
+\begin{verbatim}
+##              Estimate Std. Error   t value Pr(>|t|)
+## (Intercept) -5.203337  11.118097 -0.468006 0.643536
+## wind        -0.427058   0.086446 -4.940140 0.000036
+## temperature  0.520353   0.108134  4.812096 0.000050
+\end{verbatim}
+
+Finally, the model with this approach uses 2 variables; wind and
+temperature to estimate the variable oxidant.
+
+\subsubsection{Section 4}\label{section-4-3}
+
+From the models shown in Section 2 and 3, we ended up with same model.
+Our estimations for the parameters of the final model can be seen below.
+
+\(Y = -5.2033371 + (-0.4270576) * wind + (0.5203527) * temperature + error\)
+
+\subsubsection{Section 5}\label{section-5}
+
+Normality of the residuals for the chosen model shown in Section 4 can
+be seen below. The figure on the left is the plot of fitted data against
+residuals.
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+From the left figure, it can be assumed that the residuals are from a
+normal distribution. From the left figure, we do not observe any
+specific shapes. One suspicion we had was the possibility of
+collinearity of variables wind and temperature. We can test whether
+these two variables are collinear with the \(R^2\) test. Scatter plot of
+wind and temperature can be seen below.
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+Since the correlation among wind and temperature is 0.245412 which
+indicates it is insignificant by the \(R^2\) test, we believe this model
+is appropriate.
+
+\subsection{Question 7}\label{question-7}
+
+In this question, a linear regression model is invesitgated for the
+given dataset of crime expenses.
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-29-1} \end{center}
+
+From the pair-wise scatter plot above, the relationships among variables
+are not so obvious, therefore we took the \(log\) of the variables which
+can be seen in the figure below.
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-30-1} \end{center}
+
+From this figure, we can say; population, employment, and lawyer
+variables are collinear. We will keep this information when we are
+adding and removing variables. Collinear variables may cause overfitting
+which will perform good on the data set, but poorly on real data. We
+also used \(R^2\) test to check correlation among these variables.
+
+For this question, we chose to use step-down strategy to build a multi
+linear regression model. After checking pair-wise scatter plots, we
+inspected the data set for possible outliers. To detect possible
+influence points, we used Cook's distance. Results of Cook's distance on
+\(log(Dataset)\) can be seen below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model =}\StringTok{ }\KeywordTok{lm}\NormalTok{(expend }\OperatorTok{~}\StringTok{ }\NormalTok{bad }\OperatorTok{+}\StringTok{ }\NormalTok{crime }\OperatorTok{+}\StringTok{ }\NormalTok{lawyers }\OperatorTok{+}\StringTok{ }\NormalTok{employ }\OperatorTok{+}\StringTok{ }\NormalTok{pop, }\DataTypeTok{data =}\NormalTok{ expensesCrime[}\OperatorTok{-}\DecValTok{1}\NormalTok{])}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{cooks.distance}\NormalTok{(model), }\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     1     2     3     4     5     6     7     8     9    10    11    12 
+## 0.589 0.000 0.005 0.001 0.065 0.008 0.001 3.451 0.000 0.007 0.008 0.015 
+##    13    14    15    16    17    18    19    20    21    22    23    24 
+## 0.000 0.004 0.008 0.003 0.002 0.000 0.001 0.005 0.005 0.021 0.007 0.045 
+##    25    26    27    28    29    30    31    32    33    34    35    36 
+## 0.003 0.004 0.007 0.001 0.001 0.001 0.002 0.032 0.051 0.000 0.032 0.010 
+##    37    38    39    40    41    42    43    44    45    46    47    48 
+## 0.009 0.001 0.057 0.000 0.006 0.000 0.002 0.011 0.002 0.000 0.002 0.004 
+##    49    50    51 
+## 0.007 0.007 0.015
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{51}\NormalTok{, }\KeywordTok{cooks.distance}\NormalTok{(model))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-31-1} \end{center}
+
+From the results, we can see that rows listed below have greater impact
+on the solution. In order to minimize the effects of outliers on our
+regression model, one point is removed from the data set which can be
+seen below.
+
+\begin{verbatim}
+##   state   expend      bad    crime  lawyers   employ     pop
+## 8    DC 6.075346 3.148453 9.028699 10.25411 8.977778 6.43294
+\end{verbatim}
+
+After we inspected the data set about collinearity and influence points,
+we can now start to construct our model. As shown above, we started with
+a model using all explanatory variables. We then eliminated variables
+with high p-values until none of the variables have p-value greater than
+\(0.05\). The model we ended up with this approach is shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{newData =}\StringTok{ }\NormalTok{expensesCrime[}\OperatorTok{!}\NormalTok{rows, ]}
+\NormalTok{model =}\StringTok{ }\KeywordTok{lm}\NormalTok{(expend }\OperatorTok{~}\StringTok{ }\NormalTok{crime }\OperatorTok{+}\StringTok{ }\NormalTok{lawyers }\OperatorTok{+}\StringTok{ }\NormalTok{employ, }\DataTypeTok{data =}\NormalTok{ newData)}
+\KeywordTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = expend ~ crime + lawyers + employ, data = newData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.28593 -0.12001 -0.04906  0.07688  0.94056 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  -6.4927     0.8461  -7.674 8.98e-10 ***
+## crime         0.4840     0.1071   4.521 4.30e-05 ***
+## lawyers       0.3456     0.1398   2.472  0.01719 *  
+## employ        0.5868     0.1427   4.113  0.00016 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1949 on 46 degrees of freedom
+## Multiple R-squared:  0.969,  Adjusted R-squared:  0.967 
+## F-statistic: 479.8 on 3 and 46 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The equation of the model can be seen below:
+
+\(Y = -6.4927244 + (0.4840266 * crime) + (0.3455837 * lawyers) + (0.5868358 * employ)\)
+
+Remember, in the beginning of our analysis we suspected that the
+variables lawyers and employ may be colliniear. To test this suspicion,
+we employed \(R^2\) test. The \(R^2\) value of the test is 0.9662712,
+therefore using both of these variables are dangerous. We choose to use
+the variable employ instead of lawyers.
+
+The final multi regression model we ended up with can be seen below with
+the corresponding equation following.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model =}\StringTok{ }\KeywordTok{lm}\NormalTok{(expend }\OperatorTok{~}\StringTok{ }\NormalTok{crime }\OperatorTok{+}\StringTok{ }\NormalTok{employ, }\DataTypeTok{data =}\NormalTok{ newData)}
+\KeywordTok{summary}\NormalTok{(model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = expend ~ crime + employ, data = newData)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.25977 -0.14325 -0.02742  0.06861  0.96254 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -6.84770    0.87797  -7.799 5.08e-10 ***
+## crime        0.50363    0.11242   4.480 4.76e-05 ***
+## employ       0.93251    0.02992  31.168  < 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2052 on 47 degrees of freedom
+## Multiple R-squared:  0.9649, Adjusted R-squared:  0.9634 
+## F-statistic: 646.3 on 2 and 47 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\(Y = -6.8476979 + (0.5036331 * crime) + (0.9325075 * employ)\)
+
+Finally, residuals of the model are investigated. QQ-Plot and the
+scatter plot of fitted values vs residuals can be seen below.
+
+\includegraphics{Report_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+From the first graph, it can be seen that the residuals are not from a
+standard normal distribution, however, they are from a normal
+distribution since it still forms a line. Observations on the scatter
+plot does not yield any particular shape. Moreover, redidual scatter
+plots shown below demonstrate fairly random orders indicating a the
+current model is a good fit for the problem.
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-37-1} \end{center}
+
+\begin{center}\includegraphics{Report_files/figure-latex/unnamed-chunk-37-2} \end{center}
+
+
+\end{document}
