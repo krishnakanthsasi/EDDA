@@ -203,7 +203,21 @@ qqnorm(residuals(model))
 plot(fitted(model), residuals(model))
 ```
 
-From the first graph, it can be seen that the residuals are not from a standard normal distribution, however, they are from a normal distribution since it still forms a line. Observations on the scatter plot does not yield any particular shape, thus we conclude our investigation of the dataset with our last model which can also be seen below again.
+From the first graph, it can be seen that the residuals are not from a standard normal distribution, however, they are from a normal distribution since it still forms a line. Observations on the scatter plot does not yield any particular shape. Moreover, redidual scatter plots shown below demonstrate fairly random orders indicating a the current model is a good fit for the problem.
 
-$Y = `r model$coefficients[1]` + (`r model$coefficients[2]` * crime) + (`r model$coefficients[3]` * employ)$
+```{r, echo=FALSE, fig.align='center'}
+par(mfrow=c(1,2))
+plot(newData$crime, residuals(model),  xlab = "Crime", ylab="Residuals")
+plot(newData$employ, residuals(model), ylab="Residuals", xlab = "Employ")
+
+par(mfrow=c(1,2))
+plot(newData$expend, residuals(model), ylab="Residuals", xlab = "Expend")
+
+estimate = function(x, y) {
+  val = model$coefficients[1] + model$coefficients[2] * x + model$coefficients[2] * y
+  return(val)
+}
+
+plot(estimate(newData$crime, newData$employ), residuals(model), ylab="Residuals", xlab = "Expend Est")
+```
 
