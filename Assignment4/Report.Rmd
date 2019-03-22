@@ -20,11 +20,71 @@ This document describes the solutions found and implemented for the exercises of
 
 ### Section 1
 
+Given data set for this question consists of one binary response and two explanatory variables which one of them is also a binary variable. The numeric variable, gpa seems to be from a standart normal distribution and its histogram and QQ-Plot can be seen below. As a first step, binary variables are converted into factors.
+
+```{r, echo=FALSE, fig.align='center'}
+psiData = read.table("./data/psi.txt", header = TRUE)
+
+psiData$passed = ifelse(test=psiData$passed == 0, yes="Pass", no="Fail")
+psiData$passed = as.factor(psiData$passed)
+
+psiData$psi = ifelse(test=psiData$psi == 0, yes="Yes", no="No")
+psiData$psi = as.factor(psiData$psi)
+
+par(mfrow=c(1,2))
+hist(psiData$gpa, freq = FALSE)
+qqnorm(psiData$gpa)
+```
+
+Table of combination of two binary variables can be seen in the table below. From this table we can say that psi is looking promising since more students have passed upon receiving psi.
+
+```{r}
+str(psiData)
+
+xtabs(~passed + psi, data = psiData)
+
+```
+
 ### Section 2
+
+The output of the basic logistic regression model fitted with glm command using both numeric and binary variables can be seen below. The model is trained on training data set and validated on test data set as can be seen below. Test data set uses 20% of the whole data set without replacement.
+
+```{r}
+## 80% of the size
+smpSize = floor(0.8 * nrow(psiData))
+
+## Seed for reproduction
+set.seed(12345)
+train_ind = sample(seq_len(nrow(psiData)), size = smpSize)
+
+# Training and Test sets
+train = psiData[train_ind, ]
+test = psiData[-train_ind, ]
+
+# Fit the model
+logRegModel = glm(passed ~ psi + gpa, data = train, family = "binomial")
+logSummary = summary(logRegModel)
+logSummary
+```
+
+From the output, this model corresponds to the equation given below.
+
+$P(Y) = \Psi(`r logSummary$coefficients[1, 1]` + (`r logSummary$coefficients[2, 1]`) * psi + (`r logSummary$coefficients[3, 1]`) * gpa )$
+
+Validation of the given model can be seen below with the test data set.
+
+```{r}
+test
+predict(logRegModel, test, type="response")
+```
 
 ### Section 3
 
+From the table given in Section 1, we can calculate the probability of a student passing the assignment given he or she received psi is $P(Passed=TRUE | PSI=TRUE) = `r (15/32)/(21/32)`$. From the predictions made with the model given in Section 2, we see higher probabilities for students which received psi, therefore we are safe to assume that psi works.
+
 ### Section 4
+
+
 
 ### Section 5
 
