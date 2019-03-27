@@ -127,9 +127,23 @@ From the output of the command, we can say that if the student has received psi,
 
 ### Section 6
 
+The table of the alternate analysis can be seen below. This table looks familiar with the table shown in Section 1. With the table from Section 1 in mind, we can assume numbers 15 and 6 are the students failed regardles of the teaching method. So this is a table which is showing the combinations of the binary response variable and the binary explanatory variable.
+
+```{r}
+x = matrix(c(3, 15, 8, 6), 2, 2)
+x
+fisher.test(x)
+```
+
+The outcome of Fisher's Exact Test with the p-value of 0.0265, describes that the difference of the probabilities of the matrix are statistically significant. This means that the proportions at one variable are not the same for different values of the second variable thus the variables are not independent of each other.
+
 ### Section 7
 
+Fisher's Exact Test yields whether the proportions of two nominal variables are different depending on the value of the other variable. So it is a test of independency. This test is not appropriate for this case since we are after the probabilities of students passing or failing based on the teaching method and correponding student's gpa.
+
 ### Section 8
+
+
 
 ## Question 3
 

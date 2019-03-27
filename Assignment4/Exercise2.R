@@ -77,6 +77,12 @@ testSec4
 predicted = predict(logRegModel, testSec4, type = "response")
 predicted
 
-#seciton 5
+# Section 5
 
-round(exp(logRegModel$coefficients), 3)
+odds = round(exp(logRegModel$coefficients), 3)
+odds
+
+# Section 6
+xtabs(~psi + psi, data = psiData)
+x = matrix(c(3, 15, 8, 6), 2, 2)
+x
