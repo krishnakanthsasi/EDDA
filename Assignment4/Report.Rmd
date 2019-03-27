@@ -96,3 +96,74 @@ From the table given in Section 1, we can calculate the probability of a student
 
 ## Question 3
 
+### Section 1
+
+
+```{r, fig.align='center'}
+par(mfrow=c(1,3))
+hist(rpois(10000,.1), cex.main=.8); hist(rpois(10000,.5)); hist(rpois(10000,1))
+hist(rpois(10000,5)); hist(rpois(10000,10)); hist(rpois(10000,100))
+hist(rpois(10,1000)); hist(rpois(100,1000)); hist(rpois(1000,10000))
+```
+For larger values of $\lambda$, the distribution is similar to a normal distribution with the mean and variance both equal to $\lambda$. Parameter $n$ is of limited influence - it merely determines the amount of values to be sampled from the Poisson distribution. So long as a reasonable amount of points are sampled, the same distribution should emerge for equal $\lambda$.
+
+### Section 2
+
+In order for the distribution of a randomly distributed variable $Y$ to be in a location-scale family as a given random variable $X$, $Y$ must have the same distribution as $a + bX$ for some parameters $a$ and $b$ (in other words, $Y \stackrel{d}{=} a + b X$, where $Y \stackrel{d}{=}$ means 'equal in distribution'. 
+
+In the case of the Poisson distribution, the distribution is both scaled by parameter $\lambda$, since the mean and variance are both equal to $\lambda$. Thus, it can be said that, given a variable $Y$ and a variable $X$ that follow a Poisson distribution, $Y \stackrel{d}{=} \lambda X$, which satisfies the above condition for location-scale families.
+
+However, for very small values of lambda ($\lambda < 1$),where the distribution looks less similar to a normal distribution, it may prove difficult to produce Poisson distributions with larger $\lambda$ values via a linear transformation, as a scaling transformation may not be able to fit a normal distribution.
+
+### Section 3
+
+```{r, fig.align='center', fig.height=6}
+africa = read.table("data/africa.txt",header=TRUE)
+africaglm=glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numelec+numregim,
+              family=poisson,data=africa)
+
+plot(africa)
+
+summary(africaglm)
+confint(africaglm)
+coef(africaglm)
+```
+
+```{r, fig.align='center', fig.height=2.6}
+# Assumption checks:
+par(mfrow=c(1,3))
+plot(fitted(africaglm),residuals(africaglm), main='fitted values vs. residuals')
+plot(log(fitted(africaglm)),residuals(africaglm), main='logarithm of fitted values \nvs. residuals')
+plot(fitted(africaglm),residuals(africaglm,type="response"), main='fitted values vs. response \n residuals', ylab='response residuals')
+```
+
+Performing visual checks on the residuals of the model shows some odd relationships between the relationships and the fitted values, as the variance of the residuals doesn't seem to increase for higher fitted values. This is expected under a Poisson distribution, as higher fitted values correspond to higher variances as lambda is modeled differently for each observation. The first plot also shows some collinearity between variables such as `popn` and `pollib`.
+
+### Section 4
+
+```{r, fig.align='center'}
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numelec+numregim,
+            family=poisson,data=africa))
+# `numelec` has the highest p-value, and is removed.
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numregim,
+            family=poisson,data=africa))
+# `numregim` is removed next.
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size,
+            family=poisson,data=africa))
+# removing `size`
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn,
+            family=poisson,data=africa))
+# removing `popn`
+summary(glm(miltcoup~oligarchy+pollib+parties+pctvote,
+            family=poisson,data=africa))
+# removing `pctvote`
+summary(glm(miltcoup~oligarchy+pollib+parties,
+            family=poisson,data=africa))
+
+```
+
+The remaining parameters appear significant, as their p-value is lower than 0.05. By examining the collinearity of the remaining variables using the plot below, it appears that none of the remaining variables are excessively collinear.
+
+```{r, fig.align='center'}
+plot(africa[,1:4])
+```
