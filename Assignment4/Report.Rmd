@@ -111,8 +111,30 @@ drop1(fruitfliesfullaov,test="F")
 ```
 
 
-### Section 8
+### Section 9
 
+```{r, fig.align='center'}
+par(mfrow=c(1,2))
+qqnorm(residuals(fruitfliesfullaov))
+plot(fitted(fruitfliesfullaov),residuals(fruitfliesfullaov))
+```
+
+The assumption of normality does not seem to be violated, and the data appears reasonably homoskedastic - the variance of the residuals does not increase greatly for higher fitted values. 
+
+### Section 10
+
+```{r, fig.align='center', fig.height=4}
+ffnonlogaov = lm(longevity~thorax+activity, data=fruitflies)
+attach(ffnonlogaov)
+anova(ffnonlogaov)
+summary(ffnonlogaov)$coef
+
+par(mfrow=c(1,2))
+qqnorm(residuals(ffnonlogaov))
+plot(fitted(ffnonlogaov),residuals(ffnonlogaov))
+```
+
+In the plot on the right, the residuals appear more heteroskedastic as the fitted  Log transforming the `longevity` variable improves the homoskedasticity of the data and decreases the variance in residuals for increasingly large fitted values. Normality does not seem significantly affected by the log transformation.
 
 ## Question 2
 
