@@ -82,10 +82,6 @@ newdat2$psi = 0
 newdat2$psi = ifelse(test=newdat2$psi == 1, yes="Yes", no="No")
 newdat2$psi = as.factor(newdat2$psi)
 
-##### Advantage
-
-##### Disadvantage
-
 newdat1$passed = predict(logRegModel, newdata=newdat1, type="response")
 newdat2$passed = predict(logRegModel, newdata=newdat2, type="response")
 
