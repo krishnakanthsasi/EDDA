@@ -82,6 +82,10 @@ newdat2$psi = 0
 newdat2$psi = ifelse(test=newdat2$psi == 1, yes="Yes", no="No")
 newdat2$psi = as.factor(newdat2$psi)
 
+##### Advantage
+
+##### Disadvantage
+
 newdat1$passed = predict(logRegModel, newdata=newdat1, type="response")
 newdat2$passed = predict(logRegModel, newdata=newdat2, type="response")
 
@@ -139,11 +143,19 @@ The outcome of Fisher's Exact Test with the p-value of 0.0265, describes that th
 
 ### Section 7
 
-Fisher's Exact Test yields whether the proportions of two nominal variables are different depending on the value of the other variable. So it is a test of independency. This test is not appropriate for this case since we are after the probabilities of students passing or failing based on the teaching method and correponding student's gpa.
+Fisher's Exact Test yields whether the proportions of two nominal variables are different depending on the value of the other variable. So it is a test of independency. This test is not appropriate for this case since we are after the probabilities of students passing or failing based on the teaching method and gpa.
 
 ### Section 8
 
+Fisher's Exact Test
 
+    - Advantage: Identifies the significance of a relationship.
+    - Disadvantage: It fits for small data sets but computationally expensive for large data sets.
+
+Logistic Regression
+    
+    - Advantage: Constructs a model that measure the relationship between the dependent variable and the independent variables by estimating the probabilities using logistic function.
+    - Disadvantage: Logistic Regression will not work if there is a feature that completely separates the two classes.
 
 ## Question 3
 
