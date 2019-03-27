@@ -106,12 +106,7 @@ This means that the lifespan of a given fruitfly is affected by its sexual activ
 
 ### Section 8
 
-```{r}
-drop1(fruitfliesfullaov,test="F")
-```
-
-
-### Section 9
+We prefer the analysis with throax length because without throax length the analysis seems to be wrong as can be seen in the QQ-Plot and Residual Scatter Plot shown in Section 3. Residuals seems to from a normal distribution, however, when we look at scatter plot, we can identify a pattern which indicates that the model without throax length is not representing the data well. QQ-Plot and the scatter plot of the model with throax length can be seen below. From this graph, we can see that residuals are from a normal distribution and the scatter plot seems to be spread randomly. Again, due to these reasons, we prefer the model with throax length.  
 
 ```{r, fig.align='center'}
 par(mfrow=c(1,2))
@@ -119,7 +114,10 @@ qqnorm(residuals(fruitfliesfullaov))
 plot(fitted(fruitfliesfullaov),residuals(fruitfliesfullaov))
 ```
 
-The assumption of normality does not seem to be violated, and the data appears reasonably homoskedastic - the variance of the residuals does not increase greatly for higher fitted values. 
+
+### Section 9
+
+As seen in the graphs provided in Section 7, the assumption of normality does not seem to be violated, and the data appears reasonably homoskedastic - the variance of the residuals does not increase greatly for higher fitted values. 
 
 ### Section 10
 
@@ -222,7 +220,7 @@ From the table given in Section 1, we can calculate the probability of a student
 Probabilities for one student having gpa of 3 and receiving psi and one student having gpa of 3 and not receiving  psi is given below. 
 
 ```{r}
-testSec4 = read.table("./data/psi-Section4.txt", header = TRUE)
+testSec4 = read.table("./data/psi-section4.txt", header = TRUE)
 testSec4$passed = ifelse(test=testSec4$passed == 1, yes="Pass", no="Fail")
 testSec4$passed = as.factor(testSec4$passed)
 testSec4$psi = ifelse(test=testSec4$psi == 1, yes="Yes", no="No")
