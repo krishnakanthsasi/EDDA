@@ -67,6 +67,7 @@ plot(fitted(africaglm),residuals(africaglm,type="response"))
 # also shows some collinearity between variables such as `popn` and `pollib`.
 
 #3.4
+
 summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numelec+numregim,
             family=poisson,data=africa))
 # `numelec` has the highest p-value, and is removed.
@@ -75,15 +76,15 @@ summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size+numregim,
 # `numregim` is removed next.
 summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn+size,
             family=poisson,data=africa))
-# `size`
+# removing `size`
 summary(glm(miltcoup~oligarchy+pollib+parties+pctvote+popn,
             family=poisson,data=africa))
-# `popn`
+# removing `popn`
 summary(glm(miltcoup~oligarchy+pollib+parties+pctvote,
             family=poisson,data=africa))
-# `pctvote`
+# removing `pctvote`
 summary(glm(miltcoup~oligarchy+pollib+parties,
             family=poisson,data=africa))
 
-
+The remaining parameters appear significant, as their p-value is lower than 0.05.
 plot(africa[,1:4])
