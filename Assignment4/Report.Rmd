@@ -5,52 +5,52 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE, }
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 
 library(lme4)
 ```
-
-
-## Introduction
 
 ## Question 1
 
 ### Section 1
 ```{r, fig.align='center'}
 fruitflies = read.table(file="data/fruitflies.txt", header=TRUE)
-fruitflies = cbind(fruitflies, log(fruitflies[,2]))
-names(fruitflies)[4] = "loglongevity"
-head(fruitflies,6) # some output deleted
+fruitflies = cbind(fruitflies, log(fruitflies[,2])); names(fruitflies)[4]="loglongevity"
+head(fruitflies,3) # some output deleted
 ```
-
 ### Section 2
-```{r, fig.align='center'}
+```{r, echo=FALSE}
 attach(fruitflies)
-plot(loglongevity~thorax,pch=as.character(activity))
+```
+```{r, fig.align='center', fig.height=4.55}
+plot(loglongevity~thorax,pch=unclass(activity),
+     main = "logLongevity vs. thorax size per group")
+legend('topleft',legend=levels(fruitflies$activity),pch=1:3)
 ```
 
-The plot shows a linear correlation between thoractic length (`thorax`) and log longevity. It seems to indicate that flies with the `activity` factor set to `high` live shorter than those with `low`, which in turn score lower than those with `isolated`, assuming equal thoractic length between specimens. 
+The plot shows a linear correlation between thoractic length (`thorax`) and log longevity. It seems to indicate that flies with the `activity` factor set to `high` live less long than those with `low`, which in turn score lower than those with `isolated`, assuming equal thoractic length between specimens. 
 
 ### Section 3
 
-```{r, fig.align='center'}
+```{r, fig.align='center', fig.height=3.75, fig.width=3.25}
 fruitfliesaov = lm(loglongevity~activity, data=fruitflies)
 attach(fruitfliesaov)
 anova(fruitfliesaov)
+
+qqnorm(residuals(fruitfliesaov));
 ```
 
-According to this analysis, `activity` seems likely to have an effect on `loglongevity`, since the p-value $< 0.05$ (p-value $\approx`r round(anova(fruitfliesaov)$"Pr(>F)"[1],9)`$). Thus, sexual activity seems to influence longevity.
+According to this analysis, `activity` seems likely to have an effect on `loglongevity`, since the p-value $< 0.05$ (p-value $\approx`r round(anova(fruitfliesaov)$"Pr(>F)"[1],9)`$). Thus, sexual activity seems to influence longevity. The QQ-plot of the residuals looks relatively normal. 
 
 ### Section 4
-the analysis shows that sexual activity decreases longevity in fruitflies, since the `activity` factor affects `loglongevity`. 
+the analysis shows that sexual activity decreases longevity in fruitflies, since the `activity` factor affects `loglongevity` negatively for levels `low` and `high` compared to level `isolated`. 
 
 ```{r, fig.align='center'}
 summary(fruitfliesaov)
 ```
 
-#  could recheck these means by doing visual to check if they are valid... Not sure if I interpreted estimates right from the slide
 
-the longevity estimates for each level of the factor `activity` are `r fruitfliesaov$coef[1]` for fruitflies of level `high`, `r fruitfliesaov$coef[1]+fruitfliesaov$coef[3]` for fruitflies of level `low`, and `r fruitfliesaov$coef[1] + fruitfliesaov$coef[2]` for fruitflies of level `isolated`. As sexual activity increases, lifespan decreases.
+the rounded longevity estimates for each level of the factor `activity` are `r round(fruitfliesaov$coef[1],2)` for fruitflies of level `high`, `r round(fruitfliesaov$coef[1]+fruitfliesaov$coef[3],2)` for fruitflies of level `low`, and `r round(fruitfliesaov$coef[1] + fruitfliesaov$coef[2],2)` for fruitflies of level `isolated`. As sexual activity increases, lifespan decreases.
 
 ### Section 5
 
@@ -59,7 +59,6 @@ fruitfliesfullaov = lm(loglongevity~thorax+activity, data=fruitflies)
 attach(fruitfliesfullaov)
 anova(fruitfliesfullaov)
 summary(fruitfliesfullaov)$coef
-
 ```
 
 The output gives the following rounded estimates for the model coefficients $\mu,\,\beta\,\alpha_{1}$ and $\alpha_{2}$:  
@@ -97,7 +96,8 @@ $\mu + \beta * X_{min} + \alpha_{2} = `r round(fruitfliesfullaov$coef[1],3)` + `
 
 ```{r, fig.align='center'}
 plot(loglongevity~thorax,pch=unclass(activity))
-for (i in c("high", "low", "isolated")) abline(lm(loglongevity~thorax,data=fruitflies[fruitflies$activity==i,]))
+for (i in c("high", "low", "isolated")) 
+  abline(lm(loglongevity~thorax,data=fruitflies[fruitflies$activity==i,]))
 legend('topleft',legend=levels(fruitflies$activity),pch=1:3)
 ```
 
@@ -106,7 +106,34 @@ This means that the lifespan of a given fruitfly is affected by its sexual activ
 
 ### Section 8
 
-We prefer the analysis with throax length because without throax length the analysis seems to be wrong as can be seen in the QQ-Plot and Residual Scatter Plot shown in Section 3. Residuals seems to from a normal distribution, however, when we look at scatter plot, we can identify a pattern which indicates that the model without throax length is not representing the data well. QQ-Plot and the scatter plot of the model with throax length can be seen below. From this graph, we can see that residuals are from a normal distribution and the scatter plot seems to be spread randomly. Again, due to these reasons, we prefer the model with throax length.  
+By removing experimental units with factor level `high`, the differences between two similar groups (the group with no sexual activity and with low sexual activity) can be analysed. The difference is more difficult to detect without considering the explanatory variable `thorax`, as can be seen in this scatterplot.
+
+```{r}
+fruitfliespart = fruitflies[1:50,]
+
+plot(fruitfliespart$loglongevity~fruitfliespart$thorax,
+     pch=unclass(fruitfliespart$activity))
+for (i in c("low", "isolated")) 
+  abline(lm(loglongevity~thorax,
+            data=fruitfliespart[fruitfliespart$activity==i,]))
+legend('topleft',legend=c("low","isolated"),pch=2:3)
+```
+
+To show these, ANOVA tests are conducted for the first 50 fruit flies (groups `isolated` and `low`). The first analysis does not take `thorax` into account, while the second analysis considers its effects.
+
+```{r, fig.align='center'}
+ffnothoraxpartaov = lm(loglongevity~activity, data=fruitfliespart)
+anova(ffnothoraxpartaov)
+summary(ffnothoraxpartaov)$coef
+
+fruitfliespartaov = lm(loglongevity~thorax+activity, data=fruitfliespart)
+anova(fruitfliespartaov)
+summary(fruitfliespartaov)$coef
+```
+
+
+
+### Section 9
 
 ```{r, fig.align='center'}
 par(mfrow=c(1,2))
@@ -114,10 +141,7 @@ qqnorm(residuals(fruitfliesfullaov))
 plot(fitted(fruitfliesfullaov),residuals(fruitfliesfullaov))
 ```
 
-
-### Section 9
-
-As seen in the graphs provided in Section 7, the assumption of normality does not seem to be violated, and the data appears reasonably homoskedastic - the variance of the residuals does not increase greatly for higher fitted values. 
+From these plots, the assumption of normality does not seem to be violated, and the data appears reasonably homoskedastic. The variance of the residuals does not increase greatly for higher fitted values.  
 
 ### Section 10
 
@@ -132,13 +156,13 @@ qqnorm(residuals(ffnonlogaov))
 plot(fitted(ffnonlogaov),residuals(ffnonlogaov))
 ```
 
-In the plot on the right, the residuals appear more heteroskedastic as the fitted  Log transforming the `longevity` variable improves the homoskedasticity of the data and decreases the variance in residuals for increasingly large fitted values. Normality does not seem significantly affected by the log transformation.
+In the plot on the right, the residuals appear more heteroskedastic than in the non-log transformed data, since the variance of the residuals seems to increase as the fitted parameter on the x-axis increases. Log transforming the `longevity` variable improves the homoskedasticity of the data and decreases the variance in residuals for increasingly large fitted values. Normality does not seem significantly affected by the log transformation.
 
 ## Question 2
 
 ### Section 1
 
-Given data set for this question consists of one binary response and two explanatory variables which one of them is also a binary variable. Scatter plot of passed and gpa can be seen below. It can be seen that a linear line cannot be fitted to this data set.
+The given data set `psi.txt` consists of one binary response and two explanatory variables which one of them is also a binary variable. Scatter plot of passed and gpa can be seen below. It can be seen that a linear line cannot be fitted to this data set.
 
 ```{r, fig.align='center'}
 psiData = read.table("./data/psi.txt", header = TRUE)
