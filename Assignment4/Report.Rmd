@@ -12,9 +12,100 @@ library(lme4)
 
 
 ## Introduction
-This document describes the solutions found and implemented for the exercises of assignment 3. Exercises can be found in their corresponding sections. This document is created by Rmd, and figure captions are omitted since it changes the structure of the document in a bad way that makes it hard to follow
 
 ## Question 1
+
+### Section 1
+```{r, fig.align='center'}
+fruitflies = read.table(file="data/fruitflies.txt", header=TRUE)
+fruitflies = cbind(fruitflies, log(fruitflies[,2]))
+names(fruitflies)[4] = "loglongevity"
+head(fruitflies,6) # some output deleted
+```
+
+### Section 2
+```{r, fig.align='center'}
+attach(fruitflies)
+plot(loglongevity~thorax,pch=as.character(activity))
+```
+
+The plot shows a linear correlation between thoractic length (`thorax`) and log longevity. It seems to indicate that flies with the `activity` factor set to `high` live shorter than those with `low`, which in turn score lower than those with `isolated`, assuming equal thoractic length between specimens. 
+
+### Section 3
+
+```{r, fig.align='center'}
+fruitfliesaov = lm(loglongevity~activity, data=fruitflies)
+attach(fruitfliesaov)
+anova(fruitfliesaov)
+```
+
+According to this analysis, `activity` seems likely to have an effect on `loglongevity`, since the p-value $< 0.05$ (p-value $\approx`r round(anova(fruitfliesaov)$"Pr(>F)"[1],9)`$). Thus, sexual activity seems to influence longevity.
+
+### Section 4
+the analysis shows that sexual activity decreases longevity in fruitflies, since the `activity` factor affects `loglongevity`. 
+
+```{r, fig.align='center'}
+summary(fruitfliesaov)
+```
+
+#  could recheck these means by doing visual to check if they are valid... Not sure if I interpreted estimates right from the slide
+
+the longevity estimates for each level of the factor `activity` are `r fruitfliesaov$coef[1]` for fruitflies of level `high`, `r fruitfliesaov$coef[1]+fruitfliesaov$coef[3]` for fruitflies of level `low`, and `r fruitfliesaov$coef[1] + fruitfliesaov$coef[2]` for fruitflies of level `isolated`. As sexual activity increases, lifespan decreases.
+
+### Section 5
+
+```{r, fig.align='center'}
+fruitfliesfullaov = lm(loglongevity~thorax+activity, data=fruitflies)
+attach(fruitfliesfullaov)
+anova(fruitfliesfullaov)
+summary(fruitfliesfullaov)$coef
+
+```
+
+The output gives the following rounded estimates for the model coefficients $\mu,\,\beta\,\alpha_{1}$ and $\alpha_{2}$:  
+$\mu = `r round(fruitfliesfullaov$coef[1],3)`$   
+$\beta =  `r round(fruitfliesfullaov$coef[2],3)`$  
+$\alpha_{1} = `r round(fruitfliesfullaov$coef[4],3)`$  
+$\alpha_{2} = `r round(fruitfliesfullaov$coef[3],3)`$  
+Where mu is the estimate for an average fly with high sexual activity, beta is the parameters The p-values are all virtually zero, meaning there is almost no risk of a type I error. Sexual activity is very likely to influence longevity, regardless of whether thorax length is taken into account.
+
+### Section 6
+Sexual activity decreases longevity, since the estimate is lowest for flies with high sexual activity, and highest for isolated flies. 
+
+```{r, fig.align='center'}
+mean(fruitflies[,1])
+min(fruitflies[,1])
+```
+
+For an average fly with a thorax length $\approx `r round(mean(fruitflies[,1]),2)`,$ the value for parameter $\beta$ given above can be used in a sum to compute all three estimates for loglongevity based on variable $X_{avg}$:  
+  
+$\mu + \beta * X_{avg} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r round(mean(fruitflies[,1]),2)` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*mean(fruitflies[,1])),3)`$ (high sexual activity)  
+
+$\mu + \beta * X_{avg} + \alpha_{1} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r round(mean(fruitflies[,1]),2)` + `r round(fruitfliesfullaov$coef[4],3)` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*mean(fruitflies[,1])+fruitfliesfullaov$coef[4]),3)`$ (low sexual activity)  
+
+$\mu + \beta * X_{avg} + \alpha_{2} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r round(mean(fruitflies[,1]),2)` + `r round(fruitfliesfullaov$coef[3],3)` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*mean(fruitflies[,1])+fruitfliesfullaov$coef[3]),3)`$ (isolated specimen) 
+
+In order to compute the estimates for a fly as small as the smallest fly in the dataset, the term $X$ is substituted with $X_{min}$, the thorax size of the smallest fly in the dataset (`r min(fruitflies[,1])`).
+
+$\mu + \beta * X_{min} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r min(fruitflies[,1])` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*min(fruitflies[,1])),3)`$ (high sexual activity)  
+
+$\mu + \beta * X_{min} + \alpha_{1} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r min(fruitflies[,1])` + `r round(fruitfliesfullaov$coef[4],3)` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*min(fruitflies[,1])+fruitfliesfullaov$coef[4]),3)`$ (low sexual activity)  
+
+$\mu + \beta * X_{min} + \alpha_{2} = `r round(fruitfliesfullaov$coef[1],3)` + `r round(fruitfliesfullaov$coef[2],3)` * `r min(fruitflies[,1])` + `r round(fruitfliesfullaov$coef[3],3)` = `r round((fruitfliesfullaov$coef[1]+fruitfliesfullaov$coef[2]*min(fruitflies[,1])+fruitfliesfullaov$coef[3]),3)`$ (isolated specimen) 
+
+### Section 7
+
+```{r, fig.align='center'}
+plot(loglongevity~thorax,pch=unclass(activity))
+for (i in c("high", "low", "isolated")) abline(lm(loglongevity~thorax,data=fruitflies[fruitflies$activity==i,]))
+```
+
+The given plot shows fit lines for each level of the `activity` factor. Thorax length correlates positively with longevity (bigger flies live longer), meaning $\beta$ is expected to be nonzero. The fit lines in the plot converge slightly, although the true lines could still be parallel. In other words, the parameter $\beta$ is similar for each factor level, meaning the dependence on thorax length is similar on each level.
+This means that the lifespan of a given fruitfly is affected by its sexual activity, regardless of its size, and bigger flies live longer within each factor level. The slight convergence could be interpreted as bigger flies being more 'resistant' to the detrimental effect of sexual activity on longevity, since there is a more pronounced difference in `loglongevity` for small flies compared to large ones visible in the plot.
+
+### Section 8
+
+In the isolation group, the flies have little reason to compete, since there are no limited resources to compete over. However, when a limited 
 
 ## Question 2
 
