@@ -10,3 +10,165 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Question 1
+
+```{r, echo=FALSE}
+gala = read.table("./data/gala.txt")
+galaNew = data.frame(gala)
+```
+
+Step-down approach of the initial model can be seen below. In this approach, the variable with highest value is removed until all values have a p-value less than $0.05$.
+
+```{r}
+lModel = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = gala)
+summary(lModel)$coefficients
+lModel = lm(Species ~ Area + Elevation + Scruz + Adjacent, data = gala)
+summary(lModel)$coefficients
+lModel = lm(Species ~ Elevation + Scruz + Adjacent, data = gala)
+summary(lModel)$coefficients
+lModel = lm(Species ~ Elevation + Adjacent, data = gala)
+summary(lModel)$coefficients
+```
+
+## Question 2
+
+Step-down approach for the model of `sqrt(Species)` can be seen below. In this approach, the variable with highest value is removed until all values have a p-value less than $0.05$.
+
+```{r}
+galaNew$Species = sqrt(gala$Species)
+
+lModelNew = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galaNew)
+summary(lModelNew)$coefficients
+lModelNew = lm(Species ~ Area + Elevation + Scruz + Adjacent, data = galaNew)
+summary(lModelNew)$coefficients
+lModelNew = lm(Species ~ Area + Elevation + Adjacent, data = galaNew)
+summary(lModelNew)$coefficients
+```
+
+## Question 3
+
+```{r}
+par(mfrow=c(2,3))
+for (i in 1:6)
+  hist(gala[, i], main = names(gala)[i])
+
+par(mfrow=c(1,1)); hist(sqrt(gala$Species), main = "Histogram of sqrt(Species)", xlab = "sqrt(Species)")
+```
+
+```{r, fig.height=3.7}
+par(mfrow=c(1,2))
+
+# Plot of the initial model
+qqnorm(residuals(lModel))
+plot(fitted(lModel), residuals(lModel))
+
+# Plot of the sqrt(Species) model
+qqnorm(residuals(lModelNew))
+plot(fitted(lModelNew), residuals(lModelNew))
+```
+
+By checking the QQ-plot and residuals vs. fitted, it can be observed that transforming the variable `species` corrects for the heteroskedasticity that can be observed in the first plot. As the fitted values increase, the variance of the residuals increases and more outliers appear. The transformed data also appears much more normal when observing the difference between the QQ-plots.
+
+## Question 4
+
+```{r}
+par(mfrow=c(1,1))
+plot(1:length(gala$Species), cooks.distance(lModelNew), xlab = "ID")
+gala[16, ] # Isabela
+round(cooks.distance(lModelNew), 3)[16]
+```
+
+The Cook's distance for Isabela is much higher than the other values. This could be a consequence of the island's surface area, which is much larger than the other islands (Isabela is by far the largest island in the Galapagos islands). Regeneration of the model without the outlier can be seen below.
+
+```{r}
+galaNoIsa = gala[-16, ]
+
+lModelNoIsa = lm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, data = galaNoIsa)
+summary(lModelNoIsa)$coefficients
+lModelNoIsa = lm(Species ~ Area + Elevation + Scruz + Adjacent, data = galaNoIsa)
+summary(lModelNoIsa)$coefficients
+lModelNoIsa = lm(Species ~ Area + Elevation + Adjacent, data = galaNoIsa)
+summary(lModelNoIsa)$coefficients
+
+par(mfrow=c(1,1))
+plot(1:length(galaNoIsa$Species), cooks.distance(lModelNoIsa), xlab = "ID")
+```
+
+Removing this datapoint increases the $R^2$ value of the linear model from `r summary(lModelNew)$r.squared` to `r summary(lModelNoIsa)$r.squared`.
+
+## Question 5
+
+Plots of the explanatory variables can be seen below in histograms and pair-wise graphs.
+
+```{r}
+par(mfrow=c(2,3))
+for (i in 1:6) hist(gala[,i],main=colnames(gala)[i],xlab="",ylab="")
+pairs(gala)
+for (i in 1:6) hist(log(gala[,i]),main=colnames(gala)[i],xlab="",ylab="")
+pairs(log(gala))
+```
+
+Log transformation makes the data less skewed, which is visible in the histograms. It also makes it easier to see collinearity between variables in the paired plot. `Area` and `Elevation` are both strongly correlated with the response variable `Species`, but also appear highly collinear.
+
+## Question 6
+
+```{r, results="hide"}
+modlog=lm(log(Species)~log(Area)+log(Elevation)+log(Nearest)
+          +log(Scruz+1)+log(Adjacent),data=gala)
+modlog1 = step(modlog)
+```
+
+```{r}
+summary(modlog1)
+```
+
+It looks like the variable `Scruz` is not significant - its p-value (`r summary(modlog1)$coefficients[3, 4]`) is larger than 0.05. The step function uses AIC, which is a measure for the quality of the model rather than the influence of individual explanatory variables. This may be the reason it includes this explanatory variable.
+
+## Question 7
+
+As the surface area of each island increases quickly (since area is a squared value), the amount of species is not expected to increase in a similar fashion. If a small sample were taken from the largest island (Isabela), a smaller amount of species would be detected than on the whole island, but the proportion of species would be far less extreme than the proportion in surface area. In other words, surface area increases much faster than species. By scaling down extreme values and correcting right-tailed skew, log transformation reduces the extremity of this relationship and makes it more linear.
+
+## Question 8
+
+```{r}
+round(cooks.distance(modlog1), 3)
+par(mfrow=c(1,1))
+plot(1:length(gala$Species), cooks.distance(modlog1))
+```
+
+```{r, fig.height=3.7}
+par(mfrow=c(1,2))
+qqnorm(residuals(modlog1))
+plot(fitted(modlog1), residuals(modlog1))
+```
+
+The Cook's distance plot looks normal - all measured values are below 0.2, which means there are no influence points detected in the log-transformed model. The `Isabela` outlier has been corrected as well. The QQ-plot looks normal, and no suspicious distributions or heteroskedasticity are visible in the plot of the residuals. 
+
+## Question 9
+
+```{r}
+gala$logElevation=log(gala$Elevation)
+gala$logArea=log(gala$Area)
+gala$logScruz=log(gala$Scruz+1)
+modlog2=lm(log(Species)~logArea+logElevation+logScruz,data=gala)
+summary(modlog2)
+
+cor1 = cor.test(gala$logArea, gala$logElevation)
+cor2 = cor.test(gala$logArea, gala$logScruz)
+cor3 = cor.test(gala$logElevation, gala$logScruz)
+```
+
+Conducting Pearson's correlation test on the included variables shows a significant correlation between `logArea` and `logElevation` $(p-value \approx `r cor1[3]`)$. Including interactions is not useful here, as they are highly correlated. This may be explained by the geographic formation of volcanic hotspot islands like the Galapagos - island elevation and area tend to be correlated for these type of islands, as they grow from a source of lava in the Earth's crust.
+
+## Question 10
+
+The `modlog1` model from Question 6 seemed to have the most reliable predictive power. The model from Question 4 had a high $R^2$ value (`r summary(modlog1)$r.squared`), but this model includes the collinear variables `Area` and `Elevation`.
+Using log-transform to make oddly distributed data look normal can be problematic. For example, in the transformed dataset, the assumptions of normality and homoskedasticity are much more easily satisfied, but it is worth questioning whether the non-normality and heteroskedasticity of the original dataset is now fully corrected. This is underlined by the behaviour of the outlier `Isabela`. The Cook's distance plot shows this outlier has been significantly corrected, whereas common sense would indicate that its data is not representative for most of the smaller Galapagos islands, as larger ecosystems may behave differently from smaller ones. 
+Our final model as the alternative method is given below. By removing many variables with step analysis, potential information about the number of species is removed as well. The resulting model is almost a simple linear regression based on `Area` - an explanatory variable that is not very interesting. An increase in the area of the island is expected to increase the number of species, which is not a very surprising result. By removing `Adjacent` and `Nearest`, we are unable to examine the effects of the size and proximity of other islands in the final model, which may be more interesting to investigate. However, including these variables or attempting to construct additional variables out of `Adjacent`, `Nearest` or `Elevation` did not contribute significantly to the predictive power of the model. 
+
+
+```{r}
+finalModel = lm (log(Species)^2 ~ logArea + Scruz, data = gala)
+summary(finalModel)
+```
+
+Squaring the log-transformed `Species` values did increase the $R^2$ value of the model. The final model had an $R^2$ value of `r summary(finalModel)$r.squared`. It appears that `Scruz` significantly contributes to the model's accuracy, thus it was included in the analysis. Also, it does not appear to be collinear with any other variable.
